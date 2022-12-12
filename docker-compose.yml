@@ -1,0 +1,96 @@
+version: "3"
+
+services:
+  pg:
+    restart: always
+    image: postgres:11
+    volumes:
+      - pgdata_zilions:/var/lib/postgresql/data/
+    environment:
+      POSTGRES_DB: oe
+      POSTGRES_USER: oe
+      POSTGRES_NAME: oe
+      POSTGRES_PASSWORD: oepass
+    expose:
+      - "5432"
+
+  pgadmin:
+    # давай укажем имя контейнера
+    container_name: pgadmin
+    restart: always
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: "ea@rostkov.me"
+      PGADMIN_DEFAULT_PASSWORD: "oepass"
+    ports:
+      - "8008:80"
+    depends_on:
+      - pg
+
+  django:
+    restart: always
+    build:
+      context: ./
+      dockerfile: ./docker/django/dockerfile
+    volumes:
+      - ./backend:/app/backend
+    depends_on:
+      - pg
+      - redis
+    environment:
+      POSTGRES_DB: oe
+      POSTGRES_USER: oe
+      POSTGRES_NAME: oe
+      POSTGRES_PASSWORD: oepass
+      POSTGRES_HOST: "pg"
+      POSTGRES_PORT: "5432"
+      APP_DOMAIN: ${APP_DOMAIN}
+      SECRET_KEY: ${SECRET_KEY}
+      CELERY_BROKER: redis://redis:6379/0
+      CELERY_BACKEND: redis://redis:6379/0
+    command: >
+      sh -c "pipenv run python manage.py makemigrations && pipenv run python manage.py migrate && pipenv run python manage.py collectstatic --noinput && pipenv run gunicorn --bind :8000 --workers=5 --threads=2 --timeout 600 OntoMuseum.wsgi:application"
+
+  nginx:
+    restart: always
+    build:
+      context: ./
+      dockerfile: ./docker/nginx/dockerfile
+    ports:
+      - "8888:80"
+    volumes:
+      - ./backend:/app/backend
+      - ./docker/nginx/nginx.conf:/etc/nginx/conf.d/nginx.conf
+    depends_on:
+      - django
+
+  celery:
+    build:
+      context: ./
+      dockerfile: ./docker/django/dockerfile
+    command: >
+      sh -c "pipenv run celery --app OntoMuseum worker --loglevel=info && pipenv run celery --app OntoMuseum worker beat -S django"
+    volumes:
+      - ./backend:/app/backend
+    environment:
+      - DEBUG=1
+      - SECRET_KEY=dbaa1_i7%*3r9-=z-+_mz4r-!eetd@(-a_r(g@k8jo8y3r27%m
+      - DJANGO_ALLOWED_HOSTS=localhost 127.0.0.1 [::1]
+      - CELERY_BROKER=redis://redis:6379/0
+      - CELERY_BACKEND=redis://redis:6379/0
+      - POSTGRES_DB=oe
+      - POSTGRES_USER=oe
+      - POSTGRES_NAME=oe
+      - POSTGRES_PASSWORD=oepass
+      - POSTGRES_HOST=pg
+      - POSTGRES_PORT=5432
+    depends_on:
+      - django
+      - redis
+      - pg
+
+  redis:
+    image: redis:6-alpine
+
+volumes:
+  pgdata_zilions: { }

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="WebServers">
+    <option name="servers">
+      <webServer id="3a54c5e7-8913-48df-bca7-e3ea6c8a0ce8" name="vm.rostkov.me">
+        <fileTransfer rootFolder="/home/eddir/job/educate/OntoMuseum/backend" accessType="SFTP" host="vm.rostkov.me" port="22" sshConfigId="cd66b2a6-1f62-44a6-b420-7dd6549192f1" sshConfig="eddir@vm.rostkov.me:22 key" keyPair="true">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" passiveMode="true" shareSSLContext="true" />
+          </advancedOptions>
+        </fileTransfer>
+      </webServer>
+    </option>
+  </component>
+</project>

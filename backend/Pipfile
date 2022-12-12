@@ -1,0 +1,33 @@
+[[source]]
+name = "pypi"
+url = "https://pypi.org/simple"
+verify_ssl = true
+
+[dev-packages]
+
+[packages]
+
+beautifulsoup4 = "*"
+pycryptodome = "*"
+gunicorn = "*"
+celery = "*"
+Redis = "*"
+Django = "==4.0.4"
+django-bootstrap4 = "*"
+django-cors-headers = "*"
+django-model-utils = "*"
+django-rest-auth = "*"
+django-environ = "==0.4.5"
+django-celery-results = "*"
+djangorestframework = "==3.12.4"
+djangorestframework-simplejwt = "*"
+mysqlclient = "*"
+PyMySQL = "*"
+requests = "*"
+requests-oauthlib = "*"
+urllib3 = "*"
+psycopg2-binary = "==2.9.1"
+funowl = "0.1.11"
+
+[requires]
+python_version = "3.9"
