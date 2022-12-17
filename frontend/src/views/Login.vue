@@ -25,8 +25,8 @@ export default {
   name: "Login",
   data() {
     return {
-      login: "ea@rostkov.me",
-      password: "qwerty"
+      login: "admin",
+      password: "admin"
     }
   },
   methods: {
