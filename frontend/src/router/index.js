@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import NewUser from "@/views/users/NewUser";
+import OntologiesPanel from "@/views/ontologies/OntologiesPanel.vue";
 
 // Containers
 const TheContainer = () => import('@/containers/TheContainer')
@@ -41,9 +42,9 @@ function configRoutes() {
                     component: Dashboard
                 },
                 {
-                    path: 'ontology',
+                    path: 'ontologies',
                     meta: {
-                        label: 'Ontology'
+                        label: 'Ontologies'
                     },
                     component: {
                         render(c) {
@@ -53,18 +54,8 @@ function configRoutes() {
                     children: [
                         {
                             path: '',
-                            name: 'Ontology',
-                            // component: Ontology
-                            component: Dashboard
-                        },
-                        {
-                            path: 'recreate',
-                            name: 'Recreate ontology',
-                            meta: {
-                                label: 'Recreate ontology'
-                            },
-                            // component: RecreateOntology,
-                            component: Dashboard,
+                            name: 'Ontologies List',
+                            component: OntologiesPanel
                         },
                     ]
                 },
