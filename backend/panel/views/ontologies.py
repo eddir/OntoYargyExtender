@@ -64,5 +64,5 @@ class OntologyFillView(APIView):
         ontology.owl = owl.read()
         ontology.facts = facts.read()
         ontology.save()
-        return api_response("Наполнение начато!")
+        return api_response("Наполнение начато.")
 

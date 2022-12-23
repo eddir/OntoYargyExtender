@@ -19,6 +19,7 @@ export default {
             callback();
           } catch (e) {
             Vue.$toast.error(e);
+            console.log("Callback error: " + e);
           }
         })
         .catch(function (error) {
@@ -27,13 +28,16 @@ export default {
             let messages = error.response.data.response;
             if (typeof messages === 'string') {
               Vue.$toast.error(messages);
+              console.log("Error message: " + messages);
             } else {
               for (const [field, values] of Object.entries(messages)) {
                 if (typeof values === 'string') {
                   Vue.$toast.error(values);
+                  console.log("Error: " + values);
                 } else {
                   values.forEach(message => {
                     Vue.$toast.error(field + ": " + message);
+                    console.log("error: " + field + ": " + message);
                   });
                 }
               }
@@ -76,7 +80,7 @@ export default {
         throw new Error("Given action '" + action + "' is not defined in formAction.");
     }
   },
-  fileAction(action, formData, progressCallback, successCallback) {
+  fileAction(action, formData, progressCallback = () => null, successCallback = () => null) {
     switch (action) {
       case "fill_ontology":
         this.action(API.fillOntology(formData.owl, formData.facts), successCallback);
