@@ -43,7 +43,7 @@ CELERY_RESULT_BACKEND = 'django-db'
 CELERY_CACHE_BACKEND = 'django-cache'
 CELERY_TASK_TRACK_STARTED = True
 
-ALLOWED_HOSTS = ["*"]
+ALLOWED_HOSTS = [".ontology.rostkov.me", "localhost"]
 
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases

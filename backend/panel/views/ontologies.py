@@ -2,7 +2,7 @@ from django.http import HttpResponse
 from rest_framework.views import APIView
 from django_celery_results.models import TaskResult
 
-from panel.models import Ontology
+from panel.models import Ontology, FilledOntology
 from panel.utils import api_response
 from panel.tasks.ontologies_tasks import import_ontology_task
 
@@ -46,3 +46,23 @@ class OntologyDownloadView(APIView):
         response = HttpResponse(content, content_type='text/plain')
         response['Content-Disposition'] = 'attachment; filename={0}'.format(filename)
         return response
+
+
+class OntologyFillView(APIView):
+
+    @staticmethod
+    def get(request):
+        return api_response("fill get")
+
+    @staticmethod
+    def post(request):
+        """ retrieve owl and facts files from request, save them in the database and run the fill task in kafka """
+        owl = request.FILES['owl']
+        facts = request.FILES['facts']
+        # save owl and facts files in the database
+        ontology = FilledOntology()
+        ontology.owl = owl.read()
+        ontology.facts = facts.read()
+        ontology.save()
+        return api_response("Наполнение начато!")
+

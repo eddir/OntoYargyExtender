@@ -9,10 +9,10 @@
           <CCardBody>
             <CRow>
               <CCol sm="6">
-                <CInputFile :value.sync="input.owl" label="OWL" placeholder="Исходная онтология"/>
+                <CInputFile @change="selectOWL" label="OWL" placeholder="Исходная онтология"/>
               </CCol>
               <CCol sm="6">
-                <CInputFile :value.sync="input.owl" label="Факты" placeholder="Факты для наполнения"/>
+                <CInputFile @change="selectFacts" label="Факты" placeholder="Факты для наполнения"/>
               </CCol>
             </CRow>
             <CButton key="send" color="success" class="m-2" @click="send">Начать</CButton>
@@ -37,8 +37,22 @@ export default {
     }
   },
   methods: {
+    selectOWL(files) {
+      this.input.owl = files[0];
+    },
+    selectFacts(files) {
+      this.input.facts = files[0];
+    },
     send() {
-      Action.formAction("fill_ontology", this.input);
+      if (!this.input.owl) {
+        this.$toast.error("Не выбрана исходная онтология");
+      }
+      if (!this.input.facts) {
+        this.$toast.error("Не выбраны факты");
+      }
+      if (this.input.owl && this.input.facts) {
+        Action.fileAction("fill_ontology", this.input);
+      }
     },
   },
 }

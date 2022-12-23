@@ -17,22 +17,22 @@ module.exports = {
     https: true,
     proxy: {
       '^/api': {
-        target: 'http://onto.rostkov.me:8080',
+        target: 'https://ontology.rostkov.me',
         changeOrigin: true,
         ws: true,
       },
       '^/auth': {
-        target: 'http://onto.rostkov.me:8080',
+        target: 'https://ontology.rostkov.me',
         changeOrigin: true,
         ws: true,
       },
       '^/admin': {
-        target: 'http://onto.rostkov.me:8080',
+        target: 'https://ontology.rostkov.me',
         changeOrigin: true,
         ws: true,
       },
       '^/static': {
-        target: 'http://onto.rostkov.me:8080',
+        target: 'https://ontology.rostkov.me',
         changeOrigin: true,
         ws: true,
       },

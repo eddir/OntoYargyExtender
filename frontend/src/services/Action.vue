@@ -78,6 +78,9 @@ export default {
   },
   fileAction(action, formData, progressCallback, successCallback) {
     switch (action) {
+      case "fill_ontology":
+        this.action(API.fillOntology(formData.owl, formData.facts), successCallback);
+        break;
       default:
         throw new Error("Given action '" + action + "' is not defined in fileAction.");
     }

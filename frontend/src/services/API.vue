@@ -6,7 +6,7 @@ import './AuthInterceptor';
 let debugMode = window.location.href.indexOf("localhost") >= 0;
 
 // const SERVER_URL = "https://localhost/"; // todo: change into proxy in vue.config.js
-const SERVER_URL = debugMode ? "https://localhost/" : "/";
+const SERVER_URL = "/";
 const REST_URL = `${SERVER_URL}api/`;
 
 export default {
@@ -29,6 +29,12 @@ export default {
   importOntology(formData) {
     return axios.post(`${REST_URL}ontologies/import/`, formData);
   },
+  fillOntology(owl, facts) {
+    let formData = new FormData();
+    formData.append("owl", owl);
+    formData.append("facts", facts);
+    return this.uploadFiles(`${REST_URL}ontologies/fill/`, formData);
+  },
   getOntologies() {
     return axios.get(`${REST_URL}ontologies/`);
   },
@@ -39,6 +45,7 @@ export default {
     window.open(`${REST_URL}ontologies/${ontology_id}/download/`);
   },
   uploadFiles(url, formData, progressCallback) {
+    console.log("Uploading files...", formData);
     return axios.post(url, formData,
         {
           headers: {
