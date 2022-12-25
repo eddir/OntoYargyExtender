@@ -1,3 +1,5 @@
+from json import dumps
+
 from django.http import HttpResponse
 from rest_framework.views import APIView
 from django_celery_results.models import TaskResult
@@ -64,5 +66,15 @@ class OntologyFillView(APIView):
         ontology.owl = owl.read()
         ontology.facts = facts.read()
         ontology.save()
-        return api_response("Наполнение начато.")
 
+        from kafka import KafkaProducer
+        print("sending to kafka")
+        producer = KafkaProducer(
+            bootstrap_servers='kafka:9092',
+            value_serializer=lambda x: dumps(x).encode('utf-8'),
+            api_version=(0, 10, 1)
+        )
+        print("sending to kafka 2")
+        producer.send('fill_ontologies', ontology.id)
+
+        return api_response("Наполнение начато")

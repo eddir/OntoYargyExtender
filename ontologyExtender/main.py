@@ -1,44 +1,38 @@
+import logging
 from json import dumps, loads
 
 from kafka import KafkaConsumer, KafkaProducer
 import threading
 
-producer = KafkaProducer(bootstrap_servers='kafka:9092',
-                         value_serializer=lambda x: dumps(x).encode('utf-8'),
-                         api_version=(0, 10, 1)
-                         )
-
-consumer = KafkaConsumer(
-    'ontologies',
-    bootstrap_servers=['kafka:9092'],
-    auto_offset_reset='earliest',
-    enable_auto_commit=True,
-    # group_id='my-group-id',
-    value_deserializer=lambda x: loads(x.decode('utf-8')),
-    api_version=(0, 10, 1)
-)
+# setup logging
+logging.basicConfig()
 
 
-def register_kafka_listener(topic, listener):
-    # Poll kafka
-    def poll():
-        print("About to start polling for topic:", topic)
-        consumer.poll(timeout_ms=6000)
-        print("Started Polling for topic:", topic)
-        for msg in consumer:
-            print("Entered the loop\nKey: ", msg.key, " Value:", msg.value)
-            kafka_listener(msg)
+def kafka_loop():
+    # producer = KafkaProducer(bootstrap_servers='kafka:9092',
+    #                          value_serializer=lambda x: dumps(x).encode('utf-8'),
+    #                          api_version=(0, 10, 1)
+    #                          )
+    # producer = KafkaProducer(bootstrap_servers=bootstrap_servers)
+    # msg = json.dumps({"status": True})  # update your message here
+    # future = producer.send(topic, msg.encode('utf-8'))
+    # result = future.get(timeout=60)
+    # metrics = producer.metrics()
+    # print(metrics)
+    consumer = KafkaConsumer(
+        'fill_ontologies',
+        bootstrap_servers=['kafka:29092'],
+        auto_offset_reset='earliest',
+        enable_auto_commit=True,
+        group_id=None,
+        value_deserializer=lambda x: loads(x.decode('utf-8')),
+        api_version=(0, 10, 1)
+    )
+    # Read and print message from consumer
+    for msg in consumer:
+        logging.info("Received message: {}".format(msg.value))
 
-    print("About to register listener to topic:", topic)
-    t1 = threading.Thread(target=poll)
-    t1.start()
-    print("started a background thread")
 
-
-def kafka_listener(data):
-    print("Image Ratings:\n", data.value.decode("utf-8"))
-    # return to kafka
-    producer.send('ontologies', data.value + b' processed')
-
-
-register_kafka_listener('ontologies', kafka_listener)
+if __name__ == '__main__':
+    logging.info("Starting kafka loop")
+    kafka_loop()

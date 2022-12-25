@@ -28,6 +28,7 @@ requests-oauthlib = "*"
 urllib3 = "*"
 psycopg2-binary = "==2.9.1"
 funowl = "0.1.11"
+kafka-python = "2.0.2"
 
 [requires]
 python_version = "3.9"
