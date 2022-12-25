@@ -28,6 +28,7 @@ RUN pip install --upgrade pip && pip install -r requirements.txt
 
 # Copy source code
 COPY ./app ./app
+COPY ./bin ./bin
 
 # Run the application
 CMD ["python", "-m", "app"]

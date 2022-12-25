@@ -63,8 +63,8 @@ class OntologyFillView(APIView):
         facts = request.FILES['facts']
         # save owl and facts files in the database
         ontology = FilledOntology()
-        ontology.owl = owl.read()
-        ontology.facts = facts.read()
+        ontology.owl = owl.read().decode('utf-8')
+        ontology.facts = facts.read().decode('utf-8')
         ontology.save()
 
         from kafka import KafkaProducer

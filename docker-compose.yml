@@ -13,7 +13,6 @@ services:
       POSTGRES_PASSWORD: oepass
     expose:
       - "5432"
-
   pgadmin:
     container_name: pgadmin
     restart: always
@@ -21,6 +20,9 @@ services:
     environment:
       PGADMIN_DEFAULT_EMAIL: "ea@rostkov.me"
       PGADMIN_DEFAULT_PASSWORD: "oepass"
+    volumes:
+     - ./docker/pgdmin/servers.json:/pgadmin4/servers.json # preconfigured servers/connections
+     - ./docker/pgdmin/pgpass:/pgpass # passwords for the connections in this file
     ports:
       - "8008:80"
     networks:
@@ -155,12 +157,18 @@ services:
       - KAFKA_TOPIC_NAME=fill_ontologies
       - KAFKA_SERVER=kafka
       - KAFKA_PORT=29092
+      - PG_HOST=pg
+      - PG_PORT=5432
+      - PG_DB=oe
+      - PG_USER=oe
+      - PG_PASSWORD=oepass
     restart: "always"
     depends_on:
       - zookeeper
       - kafka
     networks:
       - broker-kafka
+      - default
 
 volumes:
   pgdata_zilions: { }
