@@ -148,26 +148,19 @@ services:
       KAFKA_BROKERCONNECT: kafka:29092
 
   ontology-extender:
-    image: python:3
-    volumes:
-      - ./ontologyExtender:/app
-    command: >
-      sh -c "cd /app && pip install -r requirements.txt && python main.py"
-    restart: always
+    build:
+      context: ./ontologyExtender
+      dockerfile: Dockerfile
+    environment:
+      - KAFKA_TOPIC_NAME=fill_ontologies
+      - KAFKA_SERVER=kafka
+      - KAFKA_PORT=29092
+    restart: "always"
     depends_on:
+      - zookeeper
       - kafka
-      - pg
     networks:
       - broker-kafka
-    environment:
-      POSTGRES_DB: oe
-      POSTGRES_USER: oe
-      POSTGRES_NAME: oe
-      POSTGRES_PASSWORD: oepass
-      POSTGRES_HOST: "pg"
-      POSTGRES_PORT: "5432"
-      KAFKA_HOST: "kafka"
-      KAFKA_PORT: "9092"
 
 volumes:
   pgdata_zilions: { }
