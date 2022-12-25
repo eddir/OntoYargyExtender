@@ -38,6 +38,9 @@ services:
     depends_on:
       - pg
       - redis
+    networks:
+      - broker-kafka
+      - default
     environment:
       POSTGRES_DB: oe
       POSTGRES_USER: oe
@@ -65,6 +68,7 @@ services:
       - "8888:80"
     networks:
       - default
+      - broker-kafka
     volumes:
       - ./backend:/app/backend
       - ./docker/nginx/nginx.conf:/etc/nginx/conf.d/nginx.conf
@@ -99,45 +103,49 @@ services:
     image: redis:6-alpine
 
   zookeeper:
-    image: wurstmeister/zookeeper:3.4.6
+    image: confluentinc/cp-zookeeper:6.2.0
+    container_name: zookeeper
+    networks:
+      - broker-kafka
     ports:
       - "2181:2181"
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
   kafka:
-    image: wurstmeister/kafka
+    image: confluentinc/cp-kafka:6.2.0
+    container_name: kafka
+    networks:
+      - broker-kafka
+    depends_on:
+      - zookeeper
     ports:
       - "9092:9092"
-      - '29092:29092'
-    depends_on:
-      - zookeeper
+      - "9101:9101"
     environment:
-      KAFKA_LISTENERS: INSIDE://0.0.0.0:9093,OUTSIDE://0.0.0.0:9092
-      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-      KAFKA_CREATE_TOPICS: "ontologies:1:1"
-
       KAFKA_BROKER_ID: 1
+      KAFKA_ADVERTISED_HOST_NAME: kafka:9092
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
-      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:29092,PLAINTEXT_HOST://localhost:9092
-      # Following line is needed for Kafka versions 0.11+
-      # in case you run less than 3 Kafka brokers in your
-      # cluster because the broker config
-      # `offsets.topic.replication.factor` (default: 3)
-      # is now enforced upon topic creation
-      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-  kafka-manager:
-    image: sheepkiller/kafka-manager:latest
-    container_name: kafka-manager
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      # KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      # KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
+      # KAFKA_CONFLUENT_LICENSE_TOPIC_REPLICATION_FACTOR: 1
+      # KAFKA_CONFLUENT_BALANCER_TOPIC_REPLICATION_FACTOR: 1
+      # KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      # KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+  kafdrop:
+    image: obsidiandynamics/kafdrop:3.27.0
+    networks:
+      - broker-kafka
+    depends_on:
+      - kafka
+      - zookeeper
     ports:
       - "9000:9000"
-    depends_on:
-      - zookeeper
-      - kafka
-    networks:
-      - default
     environment:
-      ZK_HOSTS: zookeeper:2181
+      KAFKA_BROKERCONNECT: kafka:29092
 
   ontology-extender:
     image: python:3
@@ -149,6 +157,8 @@ services:
     depends_on:
       - kafka
       - pg
+    networks:
+      - broker-kafka
     environment:
       POSTGRES_DB: oe
       POSTGRES_USER: oe
@@ -164,4 +174,6 @@ volumes:
 
 networks:
   default:
+    driver: bridge
+  broker-kafka:
     driver: bridge
