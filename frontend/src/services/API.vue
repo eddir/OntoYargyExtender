@@ -38,11 +38,17 @@ export default {
   getOntologies() {
     return axios.get(`${REST_URL}ontologies/`);
   },
+  getFillOntologies() {
+    return axios.get(`${REST_URL}ontologies/fill/`);
+  },
   getOntologiesTasks() {
     return axios.get(`${REST_URL}ontologies/tasks/`);
   },
   downloadOntology(ontology_id) {
     window.open(`${REST_URL}ontologies/${ontology_id}/download/`);
+  },
+  downloadFilledOntology(ontology_id) {
+    window.open(`${REST_URL}ontologies/fill/${ontology_id}/download/`);
   },
   uploadFiles(url, formData, progressCallback) {
     console.log("Uploading files...", formData);

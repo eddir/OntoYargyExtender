@@ -3,7 +3,7 @@ from enum import Enum
 
 
 class EnvironmentVariables(str, Enum):
-    KAFKA_TOPIC_NAME = 'KAFKA_TOPIC_NAME'
+    KAFKA_TOPIC = 'KAFKA_TOPIC'
     KAFKA_SERVER = 'KAFKA_SERVER'
     KAFKA_PORT = 'KAFKA_PORT'
     PG_USER = 'PG_USER'

@@ -54,6 +54,8 @@ services:
       SECRET_KEY: ${SECRET_KEY}
       CELERY_BROKER: redis://redis:6379/0
       CELERY_BACKEND: redis://redis:6379/0
+      KAFKA_HOST: kafka:29092
+      KAFKA_TOPIC: "fill_ontology"
     command: >
       sh -c "pipenv run python manage.py makemigrations && 
       pipenv run python manage.py migrate && 
@@ -154,7 +156,8 @@ services:
       context: ./ontologyExtender
       dockerfile: Dockerfile
     environment:
-      - KAFKA_TOPIC_NAME=fill_ontologies
+      - KAFKA_INPUT_TOPIC_NAME=fill_ontologies
+      - KAFKA_OUTPUT_TOPIC_NAME=ontologies_filled
       - KAFKA_SERVER=kafka
       - KAFKA_PORT=29092
       - PG_HOST=pg
@@ -162,6 +165,7 @@ services:
       - PG_DB=oe
       - PG_USER=oe
       - PG_PASSWORD=oepass
+      - KAFKA_TOPIC=fill_ontology
     restart: "always"
     depends_on:
       - zookeeper

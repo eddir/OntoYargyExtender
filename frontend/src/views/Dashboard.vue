@@ -2,9 +2,8 @@
   <div>
     <CRow>
       <CCol md="12">
-        <Ontologies></Ontologies>
+        <Ontologies :onto_list="onto_list"></Ontologies>
         <NewOntologyFill></NewOntologyFill>
-        <OntologiesTasks></OntologiesTasks>
       </CCol>
     </CRow>
   </div>
@@ -13,11 +12,21 @@
 <script>
 
 import Ontologies from "@/views/ontologies/Ontologies.vue";
-import OntologiesTasks from "@/views/ontologies/OntologiesTasks.vue";
 import NewOntologyFill from "@/views/ontologies/NewOntologyFill.vue";
+import API from "@/services/API.vue";
 
 export default {
   name: 'Dashboard',
-  components: {Ontologies, NewOntologyFill, OntologiesTasks},
+  components: {Ontologies, NewOntologyFill},
+  data() {
+    return {
+      onto_list: [],
+    }
+  },
+  created() {
+    API.getFillOntologies().then(response => {
+      this.onto_list = response.data.response;
+    });
+  }
 }
 </script>

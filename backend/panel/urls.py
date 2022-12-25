@@ -1,6 +1,7 @@
 from django.urls import path
 
-from .views.ontologies import OntologyView, OntologyTasksView, OntologyDownloadView, OntologyFillView
+from .views.ontologies import OntologyView, OntologyTasksView, OntologyDownloadView, OntologyFillView, \
+    OntologyFillDownloadView
 from .views.settings import VersionView, PingView
 from .views.users import UsersView, UserCreateView, UserRemoveView
 from .views.webhook import WebhookPush
@@ -29,4 +30,6 @@ urlpatterns = [
     path('api/ontologies/tasks/', OntologyTasksView.as_view()),
     path('api/ontologies/<int:pk>/download/', OntologyDownloadView.as_view()),
     path('api/ontologies/fill/', OntologyFillView.as_view()),
+    path('api/ontologies/fill/<int:pl>/download/', OntologyFillDownloadView.as_view()),
+
 ]

@@ -1,3 +1,4 @@
+import os
 from json import dumps
 
 from django.http import HttpResponse
@@ -54,7 +55,12 @@ class OntologyFillView(APIView):
 
     @staticmethod
     def get(request):
-        return api_response("fill get")
+        return api_response([{
+            "id": onto.id,
+            "name": onto.name,
+            "created_at": onto.created_at,
+            "status": onto.status
+        } for onto in FilledOntology.objects.all()])
 
     @staticmethod
     def post(request):
@@ -63,6 +69,7 @@ class OntologyFillView(APIView):
         facts = request.FILES['facts']
         # save owl and facts files in the database
         ontology = FilledOntology()
+        ontology.name = owl.name
         ontology.owl = owl.read().decode('utf-8')
         ontology.facts = facts.read().decode('utf-8')
         ontology.save()
@@ -70,11 +77,25 @@ class OntologyFillView(APIView):
         from kafka import KafkaProducer
         print("sending to kafka")
         producer = KafkaProducer(
-            bootstrap_servers='kafka:29092',
+            bootstrap_servers=os.environ.get('KAFKA_HOST'),
             value_serializer=lambda x: dumps(x).encode('utf-8'),
             api_version=(0, 10, 1)
         )
         print("sending to kafka 2")
-        producer.send('fill_ontologies', ontology.id)
+        producer.send(os.environ.get('KAFKA_TOPIC'), {
+            "id": ontology.id,
+            "action": "fill"
+        })
 
         return api_response("Наполнение начато")
+
+
+class OntologyFillDownloadView(APIView):
+
+    @staticmethod
+    def get(request, pl):
+        content = FilledOntology.objects.get(pk=pl)
+        filename = ".".join(content.name.split(".")[:-1]) + "_filled.owl"
+        response = HttpResponse(content.result, content_type='text/plain')
+        response['Content-Disposition'] = 'attachment; filename={0}'.format(filename)
+        return response

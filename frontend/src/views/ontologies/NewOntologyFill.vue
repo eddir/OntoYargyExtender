@@ -15,7 +15,7 @@
                 <CInputFile @change="selectFacts" label="Факты" placeholder="Факты для наполнения"/>
               </CCol>
             </CRow>
-            <CButton key="send" color="success" class="m-2" @click="send">Начать</CButton>
+            <CButton key="send" color="primary" class="m-2" @click="send">Начать</CButton>
           </CCardBody>
         </CCard>
       </CCol>
