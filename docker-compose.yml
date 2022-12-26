@@ -20,9 +20,9 @@ services:
     environment:
       PGADMIN_DEFAULT_EMAIL: "ea@rostkov.me"
       PGADMIN_DEFAULT_PASSWORD: "oepass"
-    volumes:
-     - ./docker/pgdmin/servers.json:/pgadmin4/servers.json # preconfigured servers/connections
-     - ./docker/pgdmin/pgpass:/pgpass # passwords for the connections in this file
+#    volumes:
+#     - ./docker/pgdmin/servers.json:/pgadmin4/servers.json # preconfigured servers/connections
+#     - ./docker/pgdmin/pgpass:/pgpass # passwords for the connections in this file
     ports:
       - "8008:80"
     networks:

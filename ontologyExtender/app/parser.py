@@ -66,39 +66,6 @@ class OntoFacts:
 def get_facts(text):
     facts = OntoFacts()
 
-    # Name = fact(
-    #     'Name',
-    #     ['first', 'middle', 'last'],
-    # )
-    #
-    # LAST = and_(
-    #     gram('Surn'),
-    #     not_(gram('Abbr')),
-    # )
-    # MIDDLE = and_(
-    #     gram('Patr'),
-    #     not_(gram('Abbr')),
-    # )
-    # FIRST = and_(
-    #     gram('Name'),
-    #     not_(gram('Abbr')),
-    # )
-    #
-    # gnc = gnc_relation()
-    # NAME = rule(
-    #     FIRST.interpretation(
-    #         Name.first
-    #     ).match(gnc),
-    #     MIDDLE.interpretation(
-    #         Name.middle
-    #     ).optional().match(gnc),
-    #     LAST.interpretation(
-    #         Name.last
-    #     ).match(gnc)
-    # ).interpretation(
-    #     Name
-    # )
-
     parser = NamesExtractor(MorphVocab())
     matches = parser(text)
     match = [_.fact for _ in matches][0]
@@ -212,42 +179,6 @@ def get_facts(text):
         ])
 
     return facts
-
-
-def legacy_get_facts(text):
-    return []
-    # return [
-    #     {
-    #         'id': 1,
-    #         'facts': [
-    #             {
-    #                 'type': 'scientist',
-    #                 'value': 'ШУЛЬГА ТАТЬЯНА ЭРИКОВНА'
-    #             },
-    #         ]
-    #     },
-    #     {
-    #         'id': 2,
-    #         'facts': [
-    #             {
-    #                 'type': 'thesis',
-    #                 'value': 'МЕТОДЫ И МОДЕЛИ ФУНКЦИОНАЛЬНОГО ВОССТАНОВЛЕНИЯ ПОВЕДЕНИЯ СИСТЕМ , МОДЕЛИРУЕМЫХ АВТОМАТАМИ СПЕЦИАЛЬНОГО КЛАССА'
-    #             },
-    #             {
-    #                 'type': 'speciality',
-    #                 'value': 'МАТЕМАТИЧЕСКАЯ КИБЕРНЕТИКА  .'
-    #             },
-    #             {
-    #                 'type': 'academic_degree',
-    #                 'value': 'КАНДИДАТ ФИЗИКО-МАТЕМАТИЧЕСКИХ НАУК'
-    #             },
-    #             {
-    #                 'type': 'branch_of_science',
-    #                 'value': 'ФИЗИКО-МАТЕМАТИЧЕСКИЕ'
-    #             },
-    #         ]
-    #     }
-    # ]
 
 
 def get_xml(facts, url):
