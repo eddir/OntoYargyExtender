@@ -3,7 +3,7 @@
     <CRow>
       <CCol md="6">
         <CCard>
-          <CCardHeader>OntoMuseum</CCardHeader>
+          <CCardHeader>OntoYargyExtender</CCardHeader>
           <CCardBody>
             <p><b>Версия:</b> {{ version }}</p>
           </CCardBody>

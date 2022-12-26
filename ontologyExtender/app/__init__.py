@@ -46,7 +46,10 @@ def main():
             )
 
             for message in consumer:
-                if message.value['action'] == 'fill':
+                if message.value['action'] == 'parse':
+                    print("parsing")
+
+                elif message.value['action'] == 'fill':
                     print("%s:%d:%d: key=%s value=%s" % (message.topic, message.partition,
                                                          message.offset, message.key, message.value))
                     task_id = message.value['id']

@@ -29,10 +29,10 @@ export default {
   importOntology(formData) {
     return axios.post(`${REST_URL}ontologies/import/`, formData);
   },
-  fillOntology(owl, facts) {
+  fillOntology(owl, text) {
     let formData = new FormData();
     formData.append("owl", owl);
-    formData.append("facts", facts);
+    formData.append("text", text);
     return this.uploadFiles(`${REST_URL}ontologies/fill/`, formData);
   },
   getOntologies() {

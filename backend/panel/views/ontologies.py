@@ -66,12 +66,12 @@ class OntologyFillView(APIView):
     def post(request):
         """ retrieve owl and facts files from request, save them in the database and run the fill task in kafka """
         owl = request.FILES['owl']
-        facts = request.FILES['facts']
+        text = request.FILES['text']
         # save owl and facts files in the database
         ontology = FilledOntology()
         ontology.name = owl.name
         ontology.owl = owl.read().decode('utf-8')
-        ontology.facts = facts.read().decode('utf-8')
+        ontology.text = text.read().decode('utf-8')
         ontology.save()
 
         from kafka import KafkaProducer
@@ -84,7 +84,7 @@ class OntologyFillView(APIView):
         print("sending to kafka 2")
         producer.send(os.environ.get('KAFKA_TOPIC'), {
             "id": ontology.id,
-            "action": "fill"
+            "action": "parse"
         })
 
         return api_response("Наполнение начато")

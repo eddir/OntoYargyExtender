@@ -3,7 +3,7 @@
     <CRow>
       <CCol md="12">
         <Ontologies :onto_list="onto_list"></Ontologies>
-        <NewOntologyFill></NewOntologyFill>
+        <NewOntologyFill @update="update"></NewOntologyFill>
       </CCol>
     </CRow>
   </div>
@@ -27,6 +27,13 @@ export default {
     API.getFillOntologies().then(response => {
       this.onto_list = response.data.response;
     });
+  },
+  methods: {
+    update() {
+      API.getFillOntologies().then(response => {
+        this.onto_list = response.data.response;
+      });
+    }
   }
 }
 </script>

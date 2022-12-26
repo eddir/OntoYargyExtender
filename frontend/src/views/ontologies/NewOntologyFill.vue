@@ -12,7 +12,7 @@
                 <CInputFile @change="selectOWL" label="OWL" placeholder="Исходная онтология"/>
               </CCol>
               <CCol sm="6">
-                <CInputFile @change="selectFacts" label="Факты" placeholder="Факты для наполнения"/>
+                <CInputFile @change="selectFacts" label="Текст" placeholder="Исходный текст"/>
               </CCol>
             </CRow>
             <CButton key="send" color="primary" class="m-2" @click="send">Начать</CButton>
@@ -32,7 +32,7 @@ export default {
     return {
       input: {
         owl: "",
-        facts: ""
+        text: ""
       }
     }
   },
@@ -41,17 +41,19 @@ export default {
       this.input.owl = files[0];
     },
     selectFacts(files) {
-      this.input.facts = files[0];
+      this.input.text = files[0];
     },
     send() {
       if (!this.input.owl) {
         this.$toast.error("Не выбрана исходная онтология");
       }
-      if (!this.input.facts) {
+      if (!this.input.text) {
         this.$toast.error("Не выбраны факты");
       }
-      if (this.input.owl && this.input.facts) {
-        Action.fileAction("fill_ontology", this.input);
+      if (this.input.owl && this.input.text) {
+        Action.fileAction("fill_ontology", this.input, null, () => {
+          this.$emit("update");
+        });
       }
     },
   },
