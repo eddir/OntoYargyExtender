@@ -1,12 +1,13 @@
 # -*- coding: utf-8 -*-
 import xml.etree.ElementTree as ET
 
-from yargy import Parser, rule, and_, not_, or_
+from yargy import Parser, rule, and_, not_, or_, predicates
 from yargy.interpretation import fact
 from yargy.pipelines import morph_pipeline
 from yargy.predicates import gram, eq, true
 from yargy.relations import gnc_relation
 from natasha import NamesExtractor, MorphVocab
+from yargy.tokenizer import MorphTokenizer
 
 
 class OntoFact:
@@ -57,7 +58,8 @@ class OntoFacts:
 
     def add_facts(self, facts: list):
         group = OntoGroup(self.last_id)
-        group.add_facts(facts)
+        for f in facts:
+            group.add_fact(OntoFact(fact_type=f[0], value=f[1]))
         self.add_group(group)
 
 
@@ -151,21 +153,63 @@ def get_facts(text):
     matches = parser.findall(text)
 
     for match in matches:
-        print(match.fact)
+        # print(match.fact)
         facts.add_fact('Department', "Кафедра " + match.fact.cathedra.name)
 
     ThesisDefence = fact(
         'ThesisDefence',
-        ['year', 'name', 'speciality']
+        ['year',
+         'name', 'speciality'
+         ]
     )
 
-    YEAR = rule(
-        gram('NUMR').match(gnc)
+    YEAR = rule(predicates.type('INT').repeatable())
+
+    THESIS_NAME = rule(
+        not_(or_(
+            eq('«'),
+            eq('»'),
+        )).repeatable().match(gnc),
     )
 
-    # DissertationName -> (Adj<kwtype="тип_диссертации",gnc-agr[1]>) "диссертация"<gnc-agr[1]> Title<quoted> interp (ThesisFact.Thesis::not_norm);
-    # THESIS_NAME = rule(
-        
+    THESIS = rule(
+        YEAR.interpretation(
+            ThesisDefence.year.inflected()
+        ),
+        rule(
+            predicates.type('OTHER')
+        ),
+        morph_pipeline([
+            'защита',
+            'защитить',
+            'защитил',
+            'защитила',
+        ]).optional(),
+        morph_pipeline([
+            'диссертация',
+            'диссертацию',
+        ]).optional(),
+        rule(eq('«')),
+        THESIS_NAME.interpretation(
+            ThesisDefence.name.inflected()
+        ),
+        rule(eq('»'))
+    ).interpretation(
+        ThesisDefence
+    )
+
+    tokenizer = MorphTokenizer()
+    # print(list(tokenizer(text)))
+    parser = Parser(THESIS)
+    matches = parser.findall(text)
+
+    for match in matches:
+        # print(match)
+        # print(match.fact)
+        facts.add_facts([
+            ['Thesis', match.fact.name],
+            # ['Speciality', match.fact.speciality],
+        ])
 
     return facts
 
