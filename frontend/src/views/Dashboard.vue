@@ -24,9 +24,11 @@ export default {
     }
   },
   created() {
-    API.getFillOntologies().then(response => {
-      this.onto_list = response.data.response;
-    });
+    this.timer = setInterval(() => {
+      API.getFillOntologies().then(response => {
+        this.onto_list = response.data.response;
+      });
+    }, 3000)
   },
   methods: {
     update() {
