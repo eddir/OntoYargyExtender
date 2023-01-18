@@ -195,7 +195,7 @@ def get_xml(facts, url):
             field = ET.SubElement(fact_element, f.type)
             field.set('val', f.value)
 
-    return ET.tostring(xml, encoding='utf8', method='xml').decode('utf-8')
+    return ET.tostring(xml, encoding='utf-8', method='xml').decode('utf-8')
 
 
 if __name__ == '__main__':

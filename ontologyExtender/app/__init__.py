@@ -76,7 +76,7 @@ def main():
                                                          message.offset, message.key, message.value))
                     task_id = message.value['id']
                     # load ontology.owl and facts.xml from database into local files then run the fill task
-                    cursor.execute("SELECT facts, owl, status, name FROM panel_filledontology WHERE id = 65")
+                    cursor.execute("SELECT facts, owl, status, name FROM panel_filledontology WHERE id = %s", (task_id,))
                     record = cursor.fetchone()
 
                     # check whether the ontology is already filled
@@ -87,7 +87,7 @@ def main():
                             with open('ontology.owl', 'w') as f:
                                 f.write(record[1])
                             print("writing facts file with a length of", len(record[1]))
-                            with open('facts.xml', 'w', encoding='utf-8') as f:
+                            with open('facts.xml', 'w') as f:
                                 f.write(record[0])
 
                             os.system('chmod +x ./bin/OntologyExtender')
