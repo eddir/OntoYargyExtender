@@ -1,7 +1,9 @@
 import os
 from json import dumps
 
+from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
+from django.utils.decorators import method_decorator
 from rest_framework.views import APIView
 from django_celery_results.models import TaskResult
 
@@ -41,7 +43,7 @@ class OntologyTasksView(APIView):
 
 
 class OntologyDownloadView(APIView):
-
+    @method_decorator(login_required)
     @staticmethod
     def get(request, pk):
         filename = "museum-ontology.owl"
@@ -53,6 +55,7 @@ class OntologyDownloadView(APIView):
 
 class OntologyFillView(APIView):
 
+    @method_decorator(login_required)
     @staticmethod
     def get(request):
         return api_response([{
@@ -62,6 +65,7 @@ class OntologyFillView(APIView):
             "status": onto.status
         } for onto in FilledOntology.objects.all()])
 
+    @method_decorator(login_required)
     @staticmethod
     def post(request):
         """ retrieve owl and facts files from request, save them in the database and run the fill task in kafka """
@@ -91,7 +95,7 @@ class OntologyFillView(APIView):
 
 
 class OntologyFillDownloadView(APIView):
-
+    @method_decorator(login_required)
     @staticmethod
     def get(request, pl):
         content = FilledOntology.objects.get(pk=pl)
