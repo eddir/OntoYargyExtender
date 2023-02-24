@@ -6,7 +6,7 @@ from kafka import KafkaConsumer, KafkaProducer
 import psycopg2
 from psycopg2 import Error
 
-from app.enum import EnvironmentVariables as EnvVariables
+from app.env import EnvironmentVariables as EnvVariables
 
 from app.parser import get_xml, get_facts
 
