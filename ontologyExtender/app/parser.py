@@ -179,7 +179,7 @@ def get_facts(text):
         SPECIALITY_TITLE.interpretation(Thesis.speciality)
     )
 
-    thesis = rule(THESIS_NAME, SPECIALITY).interpretation(Thesis)
+    thesis = rule(THESIS_NAME, SPECIALITY.optional()).interpretation(Thesis)
 
     parser = Parser(thesis)
     for match in parser.findall(text):
