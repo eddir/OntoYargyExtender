@@ -2,7 +2,8 @@
 import xml.etree.ElementTree as ET
 from xml.dom.minidom import parseString
 
-from natasha import NamesExtractor, MorphVocab
+from natasha import NamesExtractor, MorphVocab, Segmenter, Doc, NewsEmbedding, NewsMorphTagger, NewsSyntaxParser
+from natasha.grammars.addr import DOT, INT
 from yargy import Parser, rule, not_, or_, predicates
 from yargy.interpretation.normalizer import Normalizer
 from yargy.predicates import (
@@ -21,7 +22,7 @@ from yargy.tokenizer import (
     RIGHT_QUOTES,
 
     MorphTokenizer,
-    TokenRule, OTHER
+    TokenRule, OTHER, EOL
 )
 
 from ontology import OntoFacts, OntoGroup, OntoFact
@@ -37,7 +38,7 @@ def join_spans(text, spans):
 
 def get_facts(text):
     QUOTE = in_(QUOTES)
-    HYPHEN = or_(eq('-'), eq('—'))
+    HYPHEN = dictionary(['-', '—', '–'])
     facts = OntoFacts()
 
     parser = NamesExtractor(MorphVocab())
@@ -93,6 +94,7 @@ def get_facts(text):
     )
 
     TITLE = rule(
+        not_(QUOTE).repeatable().optional(),
         QUOTE,
         not_(QUOTE).repeatable().interpretation(Thesis.title),
         QUOTE
@@ -110,14 +112,32 @@ def get_facts(text):
 
     Speciality = fact(
         'Speciality',
-        ['code', 'name']
+        ['code', 'hyphen', 'name']
+    )
+
+    SPECIALITY_CODE = rule(
+        rule(
+            INT.repeatable(),
+            eq('.'),
+            INT.repeatable(),
+            eq('.'),
+            INT.repeatable()
+        ).interpretation(Speciality.code),
+        HYPHEN.interpretation(Speciality.hyphen)
     )
 
     SPECIALITY_TITLE = rule(
-        not_(QUOTE).repeatable().optional().interpretation(Speciality.code),
-        QUOTE,
-        not_(QUOTE).repeatable().interpretation(Speciality.name),
-        QUOTE
+        SPECIALITY_CODE,
+        or_(rule(
+            QUOTE,
+            not_(QUOTE).repeatable().interpretation(Speciality.name),
+            QUOTE
+        ), rule(
+            not_(or_(
+                eq('.'),
+                eq(';'))
+            ).repeatable().interpretation(Speciality.name)
+        ))
     ).interpretation(Speciality)
 
     SCIENCE_DIRECTION = rule(
@@ -147,9 +167,13 @@ def get_facts(text):
         eq('наук').interpretation(AcademicDegree.suffix)
     ).interpretation(AcademicDegree)
 
-    SPECIALITY = rule(
+    SPECIALITY_DEGREE = rule(
         not_(or_(eq('кандидата'), eq('доктора'))).repeatable(),
-        ACADEMIC_DEGREE.interpretation(Thesis.degree),
+        ACADEMIC_DEGREE.interpretation(Thesis.degree)
+    )
+
+    SPECIALITY = rule(
+        SPECIALITY_DEGREE.optional(),
         eq('по'),
         SCIENCE_DIRECTION,
         SPECIALITY_TITLE.interpretation(Thesis.speciality)
@@ -159,12 +183,44 @@ def get_facts(text):
 
     parser = Parser(thesis)
     for match in parser.findall(text):
-        facts.add_facts([
+        info = [
             ['Thesis ', match.fact.title],
-            ['Speciality', join_spans(text, match.fact.speciality.spans)],
-            ['AcademicDegree', join_spans(text, match.fact.degree.spans)],
-            ['BranchOfScience', match.fact.degree.branch.name],
-        ])
+        ]
+        if match.fact.speciality:
+            if match.fact.speciality.code:
+                if match.fact.speciality.hyphen:
+                    info.append(['Speciality', " ".join([
+                        match.fact.speciality.code,
+                        match.fact.speciality.hyphen,
+                        match.fact.speciality.name
+                    ])])
+                else:
+                    info.append(['Speciality', " ".join([
+                        match.fact.speciality.code,
+                        match.fact.speciality.name
+                    ])])
+            else:
+                info.append(['Speciality', match.fact.speciality.name])
+
+        if match.fact.degree:
+            info.append(['AcademicDegree', match.fact.degree.degree])
+            info.append(['BranchOfScience', match.fact.degree.branch.name])
+
+        facts.add_facts(info)
+
+    emb = NewsEmbedding()
+    morph_tagger = NewsMorphTagger(emb)
+    syntax_parser = NewsSyntaxParser(emb)
+    segmenter = Segmenter()
+    doc = Doc(text)
+
+    doc.segment(segmenter)
+    doc.tag_morph(morph_tagger)
+    doc.parse_syntax(syntax_parser)
+
+    sent = doc.sents[1]
+    sent.morph.print()
+
 
     return facts
 
