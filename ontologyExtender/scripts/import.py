@@ -1,5 +1,6 @@
 # Здесь мы делаем пост запросы для извлечения всех преподов.
 # Затем извлекаем факты и записываем в таблицу excel.
+import json
 import logging
 
 import pandas as pd
@@ -34,6 +35,46 @@ logger.addHandler(ch)
 def import_teachers_sstu():
     # Получаем список преподов
     teachers = get_teachers()
+
+    with open('hand_filled.json', encoding='utf-8') as json_file:
+        standart = json.load(json_file)[2]['data']
+
+    tp = 0 # correct matching
+    fp = 0 # wrong matching
+    fn = 0 # miss matching
+
+    for teacher in teachers:
+        for std in standart:
+            if std['url'] == teacher[0]:
+                comparing = [
+                    [std['name'], teacher[1]],
+                    [std['department'], teacher[2]],
+                    [std['thesis_1'], teacher[3].get('thesis_1', "")],
+                    [std['thesis_2'], teacher[3].get('thesis_2',  "")],
+                    [std['speciality_1'], teacher[3].get('speciality_1', "")],
+                    [std['speciality_2'], teacher[3].get('speciality_2', "")],
+                    [std['degree_1'], teacher[3].get('degree_1', "")],
+                    [std['degree_2'], teacher[3].get('degree_2', "")],
+                    [std['branch_1'], teacher[3].get('branch_1', "")],
+                    [std['branch_2'], teacher[3].get('branch_2', "")],
+                ]
+                for cmr in comparing:
+                    if cmr[0] != "" and cmr[1] != "":
+                        if cmr[0] == cmr[1]:
+                            tp += 1
+                        else:
+                            fp += 1
+                    elif cmr[0] == "" and cmr[1] != "":
+                        fn += 1
+
+    precision = tp / (tp + fp)
+    recall = tp / (tp + fn)
+    f = 2 * (precision * recall) / (precision + recall)
+
+    print("Precision: " + str(precision))
+    print("Recall: " + str(recall))
+    print("F: " + str(f))
+
     # Записываем в файл
     write_teachers(teachers)
 
@@ -56,6 +97,7 @@ def get_teachers():
 
     # Получаем список преподов
     teachers = []
+    teachers_limit = 100
 
     for i in range(1, page_count + 1):
         logger.info("Страница {} из {}".format(i, page_count))
@@ -97,20 +139,37 @@ def get_teachers():
                     logger.warning("Skipping")
                     continue
 
-                payload = ""
+                payload = {}
                 for f in facts:
                     if f[0] not in ['Scientist', 'Department']:
-                        payload += "{}: {}, ".format(f[0], f[1])
+                        attributes = {
+                            'Thesis': 'thesis_',
+                            'Speciality': 'speciality_',
+                            'AcademicDegree': 'degree_',
+                            'BranchOfScience': 'branch_'
+                        }
+                        key = attributes[f[0]] + "1"
+                        if key in payload:
+                            key = attributes[f[0]] + "2"
+
+                        payload[key] = f[1]
 
                 teacher = ["https://sstu.ru" + teacher_url]
                 scientist = [f[1] for f in facts if f[0] == 'Scientist']
                 department = [f[1] for f in facts if f[0] == 'Department']
                 if len(scientist) > 0:
                     teacher.append(scientist[0])
+                else:
+                    teacher.append("")
                 if len(department) > 0:
                     teacher.append(department[0])
+                else:
+                    teacher.append("")
                 teacher.append(payload)
                 teachers.append(teacher)
+
+                if len(teachers) > teachers_limit:
+                    return teachers
             except Exception as e:
                 logger.error(e)
 
@@ -121,8 +180,8 @@ def post_request(url, payload=None):
     s = requests.Session()
 
     # s.proxies = {
-    #     "http": "http://***REMOVED***:***REMOVED***@194.32.240.88:3104",
-    #     "https": "https://***REMOVED***:***REMOVED***@194.32.240.88:3104"
+    #     "http": "http://user:qwerty@1.1.1.1:3104",
+    #     "https": "http://user:qwerty@1.1.1.1:3104"
     # }
 
     return s.post(
@@ -139,8 +198,8 @@ def get_request(url):
     s = requests.Session()
 
     # s.proxies = {
-    #     "http": "http://***REMOVED***:***REMOVED***@194.32.240.88:3104",
-    #     "https": "https://***REMOVED***:***REMOVED***@194.32.240.88:3104"
+    #     "http": "http://user:qwerty@1.1.1.1:3104",
+    #     "https": "http://user:qwerty@1.1.1.1:3104"
     # }
 
     return s.get(

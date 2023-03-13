@@ -205,7 +205,7 @@ class FactsParser:
 
         for match in self.parser_thesis.findall(text):
             info = [
-                ['Thesis ', match.fact.title],
+                ['Thesis', match.fact.title],
             ]
             if match.fact.speciality:
                 if match.fact.speciality.code:
