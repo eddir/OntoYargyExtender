@@ -1,0 +1,14 @@
+# docker-compose for ubuntu 16.04 with tomita-parser
+
+version: '3.3'
+
+services:
+  tomita-parser:
+    image: tomita-parser
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - ./tomita-parser:/tomita-parser
+    working_dir: /tomita-parser
+    command: ["python3", "/tomita-parser/record_time.py"]

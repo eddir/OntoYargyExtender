@@ -1,0 +1,12 @@
+import "base.proto"; 
+import "facttypes_base.proto";
+
+message ThesisFact: NFactType.TFact
+{
+    optional NFactType.TFio Scientist = 1;
+    optional string Thesis = 2;
+	optional string Speciality = 3;
+	optional string AcademicDegree = 4;
+	optional string Department = 5;
+	optional string BranchOfScience = 6;
+}

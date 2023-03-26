@@ -1,0 +1,24 @@
+encoding "utf8";
+
+TTextMinerConfig {
+  Dictionary = "gzt/root.gzt";
+  PrettyOutput = "output/debug.html";
+  ForceRecompile = 1;
+  
+  Input = {
+    Dir = "input";
+  }
+
+  Articles = [
+    { Name = "защита_диссертации" }
+  ]
+  
+  Facts = [
+	{ Name = "ThesisFact" }
+  ]
+  
+  Output = {
+    File = "output/facts.xml";
+    Format = xml;
+  }
+}
