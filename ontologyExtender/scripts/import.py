@@ -2,15 +2,15 @@
 # Затем извлекаем факты и записываем в таблицу excel.
 import json
 import logging
+import os
+import time
 
 import pandas as pd
 import requests as requests
 from bs4 import BeautifulSoup
 
-from ontologyExtender.scripts.parser import FactsParser
-# from parser import FactsParser
-
-from requests.auth import HTTPProxyAuth
+# from ontologyExtender.scripts.parser import FactsParser
+from parser import FactsParser
 
 # from ontologyExtender.scripts.parser import FactsParser
 
@@ -32,54 +32,66 @@ ch.setFormatter(formatter)
 logger.addHandler(ch)
 
 
-def import_teachers_sstu():
+class ParsingException(Exception):
+    pass
+
+
+def import_teachers_sstu(local=False):
+    start_time = time.time()
+
     # Получаем список преподов
-    teachers = get_teachers()
+    teachers = get_teachers_local() if local else get_teachers_remote()
+
+    logger.info("Got {} raws".format(len(teachers)))
+
+    duration = time.time() - start_time
 
     with open('hand_filled.json', encoding='utf-8') as json_file:
         standart = json.load(json_file)[2]['data']
 
-    tp = 0 # correct matching
-    fp = 0 # wrong matching
-    fn = 0 # miss matching
+    if not local:
+        tp = 0  # correct matching
+        fp = 0  # wrong matching
+        fn = 0  # miss matching
 
-    for teacher in teachers:
-        for std in standart:
-            if std['url'] == teacher[0]:
-                comparing = [
-                    [std['name'], teacher[1]],
-                    [std['department'], teacher[2]],
-                    [std['thesis_1'], teacher[3].get('thesis_1', "")],
-                    [std['thesis_2'], teacher[3].get('thesis_2',  "")],
-                    [std['speciality_1'], teacher[3].get('speciality_1', "")],
-                    [std['speciality_2'], teacher[3].get('speciality_2', "")],
-                    [std['degree_1'], teacher[3].get('degree_1', "")],
-                    [std['degree_2'], teacher[3].get('degree_2', "")],
-                    [std['branch_1'], teacher[3].get('branch_1', "")],
-                    [std['branch_2'], teacher[3].get('branch_2', "")],
-                ]
-                for cmr in comparing:
-                    if cmr[0] != "" and cmr[1] != "":
-                        if cmr[0] == cmr[1]:
-                            tp += 1
-                        else:
-                            fp += 1
-                    elif cmr[0] == "" and cmr[1] != "":
-                        fn += 1
+        for teacher in teachers:
+            for std in standart:
+                if std['url'] == teacher[0]:
+                    comparing = [
+                        [std['name'], teacher[1]],
+                        [std['department'], teacher[2]],
+                        [std['thesis_1'], teacher[3].get('thesis_1', "")],
+                        [std['thesis_2'], teacher[3].get('thesis_2', "")],
+                        [std['speciality_1'], teacher[3].get('speciality_1', "")],
+                        [std['speciality_2'], teacher[3].get('speciality_2', "")],
+                        [std['degree_1'], teacher[3].get('degree_1', "")],
+                        [std['degree_2'], teacher[3].get('degree_2', "")],
+                        [std['branch_1'], teacher[3].get('branch_1', "")],
+                        [std['branch_2'], teacher[3].get('branch_2', "")],
+                    ]
+                    for cmr in comparing:
+                        if cmr[0] != "" and cmr[1] != "":
+                            if cmr[0] == cmr[1]:
+                                tp += 1
+                            else:
+                                fp += 1
+                        elif cmr[0] == "" and cmr[1] != "":
+                            fn += 1
 
-    precision = tp / (tp + fp)
-    recall = tp / (tp + fn)
-    f = 2 * (precision * recall) / (precision + recall)
+        precision = tp / (tp + fp)
+        recall = tp / (tp + fn)
+        f = 2 * (precision * recall) / (precision + recall)
 
-    print("Precision: " + str(precision))
-    print("Recall: " + str(recall))
-    print("F: " + str(f))
+        print("Precision: " + str(precision))
+        print("Recall: " + str(recall))
+        print("F: " + str(f))
+    print("Time: " + str(duration))
 
     # Записываем в файл
     write_teachers(teachers)
 
 
-def get_teachers():
+def get_teachers_remote():
     parser = FactsParser()
     # Получаем количество страниц с помощью пост запроса
     # Перебираем все страницы и получаем список преподов
@@ -131,41 +143,12 @@ def get_teachers():
                     # print(raw_text)
                     # exit()
 
-                logger.info("Извлечение фактов.")
                 try:
-                    facts = parser.get_facts(raw_text).as_array()
-                except Exception as e:
-                    logger.warning(e)
-                    logger.warning("Skipping")
+                    teacher = get_facts(raw_text, teacher_url, parser)
+                except ParsingException as e:
+                    logger.error(e)
                     continue
 
-                payload = {}
-                for f in facts:
-                    if f[0] not in ['Scientist', 'Department']:
-                        attributes = {
-                            'Thesis': 'thesis_',
-                            'Speciality': 'speciality_',
-                            'AcademicDegree': 'degree_',
-                            'BranchOfScience': 'branch_'
-                        }
-                        key = attributes[f[0]] + "1"
-                        if key in payload:
-                            key = attributes[f[0]] + "2"
-
-                        payload[key] = f[1]
-
-                teacher = ["https://sstu.ru" + teacher_url]
-                scientist = [f[1] for f in facts if f[0] == 'Scientist']
-                department = [f[1] for f in facts if f[0] == 'Department']
-                if len(scientist) > 0:
-                    teacher.append(scientist[0])
-                else:
-                    teacher.append("")
-                if len(department) > 0:
-                    teacher.append(department[0])
-                else:
-                    teacher.append("")
-                teacher.append(payload)
                 teachers.append(teacher)
 
                 if len(teachers) > teachers_limit:
@@ -174,6 +157,61 @@ def get_teachers():
                 logger.error(e)
 
     return teachers
+
+
+def get_teachers_local():
+    logger.info("Loading local")
+    parser = FactsParser()
+    teachers = []
+
+    # go throw each file in tomita-docker/tomita-parser/input
+    for filename in os.listdir('tomita-docker/tomita-parser/input'):
+        with open('tomita-docker/tomita-parser/input/' + filename, encoding='utf-8') as raw_text:
+            try:
+                teacher = get_facts(raw_text.read(), filename, parser)
+                teachers.append(teacher)
+            except ParsingException as e:
+                logger.error(e)
+                continue
+
+    return teachers
+
+
+def get_facts(raw_text, teacher_url, parser):
+    logger.info("Извлечение фактов {}".format(teacher_url))
+    try:
+        facts = parser.get_facts(raw_text).as_array()
+    except Exception as e:
+        raise ParsingException("Ошибка при извлечении фактов: " + str(e))
+
+    payload = {}
+    for f in facts:
+        if f[0] not in ['Scientist', 'Department']:
+            attributes = {
+                'Thesis': 'thesis_',
+                'Speciality': 'speciality_',
+                'AcademicDegree': 'degree_',
+                'BranchOfScience': 'branch_'
+            }
+            key = attributes[f[0]] + "1"
+            if key in payload:
+                key = attributes[f[0]] + "2"
+
+            payload[key] = f[1]
+
+    teacher = ["https://sstu.ru" + teacher_url]
+    scientist = [f[1] for f in facts if f[0] == 'Scientist']
+    department = [f[1] for f in facts if f[0] == 'Department']
+    if len(scientist) > 0:
+        teacher.append(scientist[0])
+    else:
+        teacher.append("")
+    if len(department) > 0:
+        teacher.append(department[0])
+    else:
+        teacher.append("")
+    teacher.append(payload)
+    return teacher
 
 
 def post_request(url, payload=None):
@@ -217,15 +255,10 @@ def write_teachers(teachers):
     df.to_excel('teachers.xlsx', index=False)
 
 
-def import_facts_sstu():
-    ...
+def main():
+    import_teachers_sstu(local=True)
+    logger.info("Данные сохранены.")
 
 
 if __name__ == '__main__':
-    import_teachers_sstu()
-    # write_teachers([
-    #     ['Иванов Иван Иванович', 'https://www.sstu.ru/teachers/ivanov-ivan-ivanovich/'],
-    #     ['Петров Петр Петрович', 'https://www.sstu.ru/teachers/petrov-petr-petrovich/'],
-    #     ['Сидоров Сидр Сидорович', 'https://www.sstu.ru/teachers/sidorov-sidr-sidorovich/']
-    # ])
-    logger.info("Данные сохранены.")
+    main()
