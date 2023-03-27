@@ -214,3 +214,5 @@ OntoMuseum/settings_local.py
 onto.txt
 
 ontologyExtender/src/
+
+*.prof
