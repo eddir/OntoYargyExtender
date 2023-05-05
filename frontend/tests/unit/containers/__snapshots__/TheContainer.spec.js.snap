@@ -6,8 +6,6 @@ exports[`TheContainer.vue renders correctly 1`] = `
 >
   <thesidebar-stub />
    
-  <thesecondarysidebar-stub />
-   
   <cwrapper-stub
     tag="div"
   >
