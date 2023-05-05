@@ -1,13 +1,10 @@
 name: Project check
 
 on: 
-#   push:
-#     branches:
-#       - master
-   pull_request:
+   push:
      branches:
        - master
-   merge:
+   pull_request:
      branches:
        - master
 
