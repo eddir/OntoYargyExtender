@@ -52,64 +52,10 @@ exports[`TheHeader.vue renders correctly 1`] = `
         to="/dashboard"
       >
         
-        Dashboard
+        Управление
       
       </cheadernavlink-stub>
     </cheadernavitem-stub>
-  </cheadernav-stub>
-   
-  <cheadernav-stub
-    class="mr-4"
-  >
-    <cheadernavitem-stub
-      class="d-md-down-none mx-2"
-    >
-      <cheadernavlink-stub
-        activeclass="router-link-active"
-        event="click"
-        exactactiveclass="router-link-exact-active"
-        routertag="a"
-        target="_self"
-      >
-        <cicon-stub
-          name="cil-bell"
-        />
-      </cheadernavlink-stub>
-    </cheadernavitem-stub>
-     
-    <cheadernavitem-stub
-      class="d-md-down-none mx-2"
-    >
-      <cheadernavlink-stub
-        activeclass="router-link-active"
-        event="click"
-        exactactiveclass="router-link-exact-active"
-        routertag="a"
-        target="_self"
-      >
-        <cicon-stub
-          name="cil-list"
-        />
-      </cheadernavlink-stub>
-    </cheadernavitem-stub>
-     
-    <cheadernavitem-stub
-      class="d-md-down-none mx-2"
-    >
-      <cheadernavlink-stub
-        activeclass="router-link-active"
-        event="click"
-        exactactiveclass="router-link-exact-active"
-        routertag="a"
-        target="_self"
-      >
-        <cicon-stub
-          name="cil-envelope-open"
-        />
-      </cheadernavlink-stub>
-    </cheadernavitem-stub>
-     
-    <theheaderdropdownaccnt-stub />
   </cheadernav-stub>
    
   <csubheader-stub

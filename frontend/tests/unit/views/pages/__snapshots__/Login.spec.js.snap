@@ -21,7 +21,7 @@ exports[`Login.vue renders correctly 1`] = `
         >
           <ccardheader-stub>
             <h1>
-              Login
+              Вход
             </h1>
           </ccardheader-stub>
            
@@ -31,17 +31,35 @@ exports[`Login.vue renders correctly 1`] = `
               fade="true"
               show="true"
             >
-              Требуется авторизация - @RostkovBot.
+              Требуется авторизация.
             </calert-stub>
              
-            <vue-telegram-login-stub
-              mode="callback"
-              redirecturl=""
-              requestaccess="read"
-              size="large"
-              telegramlogin="RostkovBot"
-              userpic="true"
+            <cinput-stub
+              label="Логин"
+              lazy="400"
+              type="text"
+              value="admin"
             />
+             
+            <cinput-stub
+              label="Пароль"
+              lazy="400"
+              type="password"
+              value="admin"
+            />
+             
+            <cbutton-stub
+              activeclass="router-link-active"
+              class="m-2"
+              color="success"
+              event="click"
+              exactactiveclass="router-link-exact-active"
+              routertag="a"
+              target="_self"
+              type="button"
+            >
+              Войти
+            </cbutton-stub>
           </ccardbody-stub>
         </ccard-stub>
       </ccol-stub>
