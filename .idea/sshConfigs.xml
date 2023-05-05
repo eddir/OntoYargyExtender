@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="SshConfigs">
+    <configs>
+      <sshConfig host="vm.rostkov.me" id="cd66b2a6-1f62-44a6-b420-7dd6549192f1" keyPath="C:\Users\eddir\Documents\Job\dom\vm-rostkov-me.pem" port="22" nameFormat="DESCRIPTIVE" username="eddir" useOpenSSHConfig="true" />
+    </configs>
+  </component>
+</project>
