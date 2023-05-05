@@ -51,7 +51,7 @@ export default {
         this.$toast.error("Не выбраны факты");
       }
       if (this.input.owl && this.input.text) {
-        Action.fileAction("fill_ontology", this.input, null, () => {
+        Action.fileAction("fill_ontology", this.input, () => {
           this.$emit("update");
         });
       }

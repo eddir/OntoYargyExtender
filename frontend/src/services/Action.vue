@@ -62,12 +62,6 @@ export default {
       Vue.$toast.error(e.message);
     }
   },
-  regularAction(action, server_id, formData, callback = () => null) {
-    switch (action) {
-      default:
-        throw new Error("Given action '" + action + "' is not defined in serverAction.");
-    }
-  },
   formAction(action, formData, callback = () => null) {
     switch (action) {
       case "create_user":
@@ -80,7 +74,7 @@ export default {
         throw new Error("Given action '" + action + "' is not defined in formAction.");
     }
   },
-  fileAction(action, formData, progressCallback = () => null, successCallback = () => null) {
+  fileAction(action, formData, successCallback = () => null) {
     switch (action) {
       case "fill_ontology":
         this.action(API.fillOntology(formData.owl, formData.text), successCallback);
