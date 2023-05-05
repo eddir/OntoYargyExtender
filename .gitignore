@@ -215,4 +215,6 @@ onto.txt
 
 ontologyExtender/src/
 
-*.prof
+ontologyExtender/scripts/teachers.xlsx
+
+ontologyExtender/scripts/program.prof

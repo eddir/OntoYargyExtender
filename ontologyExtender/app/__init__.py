@@ -7,13 +7,10 @@ import psycopg2
 from psycopg2 import Error
 
 from app.env import EnvironmentVariables as EnvVariables
-
 from app.parser import get_xml, get_facts
 
 
 def main():
-    print("Starting consumer")
-
     try:
         # Connect to an existing database
         connection = psycopg2.connect(user=EnvVariables.PG_USER.get_env(),
@@ -50,7 +47,6 @@ def main():
             for message in consumer:
                 if message.value['action'] == 'parse':
                     try:
-                        print("parsing")
                         task_id = message.value['id']
                         cursor.execute("SELECT text, owl, status, name FROM panel_filledontology WHERE id = %s", (task_id,))
                         record = cursor.fetchone()
@@ -58,7 +54,6 @@ def main():
                             facts = get_xml(get_facts(record[0]), record[3])
                             cursor.execute("UPDATE panel_filledontology SET facts = %s, status = 'filling' WHERE id = %s", (facts, task_id))
                             connection.commit()
-                            print("parsing done")
                             producer.send(kafka_topic, {
                                 "id": message.value['id'],
                                 "action": "fill",
@@ -83,10 +78,8 @@ def main():
                     if record is not None and record[2] == "filling":
                         try:
 
-                            print("writing owl file with a length of", len(record[0]))
                             with open('ontology.owl', 'w') as f:
                                 f.write(record[1])
-                            print("writing facts file with a length of", len(record[1]))
                             with open('facts.xml', 'w') as f:
                                 f.write(record[0])
 
@@ -96,7 +89,6 @@ def main():
                             # save into result field in database
                             with open('result.owl', 'r') as f:
                                 result = f.read()
-                                print("Writing result with a length of", len(result))
                                 cursor.execute("UPDATE panel_filledontology SET result = %s WHERE id = %s", (result, task_id))
                                 connection.commit()
 
@@ -107,9 +99,7 @@ def main():
 
                                 cursor.execute("UPDATE panel_filledontology SET status = %s WHERE id = %s", ("done", task_id))
                                 connection.commit()
-                                print("Record updated successfully ")
 
-                            print("Ontology Filler finished")
                         except (Exception, Error) as error:
                             print("Error while producing ontology filler task: ", error, " - in line ", sys.exc_info()[-1].tb_lineno)
                             # update state to failed

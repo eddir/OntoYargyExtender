@@ -25,7 +25,7 @@ from yargy.tokenizer import (
     TokenRule, OTHER, EOL
 )
 
-from ontology import OntoFacts, OntoGroup, OntoFact
+from app.ontology import OntoFacts, OntoGroup, OntoFact
 
 
 def join_spans(text, spans):
@@ -217,9 +217,6 @@ def get_facts(text):
     doc.segment(segmenter)
     doc.tag_morph(morph_tagger)
     doc.parse_syntax(syntax_parser)
-
-    sent = doc.sents[1]
-    sent.morph.print()
 
     return facts
 

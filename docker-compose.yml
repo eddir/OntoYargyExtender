@@ -39,7 +39,6 @@ services:
       - ./backend:/app/backend
     depends_on:
       - pg
-      - redis
     networks:
       - broker-kafka
       - default
@@ -52,8 +51,6 @@ services:
       POSTGRES_PORT: "5432"
       APP_DOMAIN: ${APP_DOMAIN}
       SECRET_KEY: ${SECRET_KEY}
-      CELERY_BROKER: redis://redis:6379/0
-      CELERY_BACKEND: redis://redis:6379/0
       KAFKA_HOST: kafka:29092
       KAFKA_TOPIC: "fill_ontology"
     command: >
@@ -78,33 +75,6 @@ services:
       - ./docker/nginx/nginx.conf:/etc/nginx/conf.d/nginx.conf
     depends_on:
       - django
-
-  celery:
-    build:
-      context: ./
-      dockerfile: docker/django/Dockerfile
-    command: >
-      sh -c "pipenv run celery --app OntoMuseum worker --loglevel=info && pipenv run celery --app OntoMuseum worker beat -S django"
-    volumes:
-      - ./backend:/app/backend
-    environment:
-      - DEBUG=1
-      - SECRET_KEY=${SECRET_KEY}
-      - DJANGO_ALLOWED_HOSTS=localhost 127.0.0.1 [::1]
-      - CELERY_BROKER=redis://redis:6379/0
-      - CELERY_BACKEND=redis://redis:6379/0
-      - POSTGRES_DB=oe
-      - POSTGRES_USER=oe
-      - POSTGRES_NAME=oe
-      - POSTGRES_PASSWORD=oepass
-      - POSTGRES_HOST=pg
-      - POSTGRES_PORT=5432
-    depends_on:
-      - django
-      - redis
-      - pg
-  redis:
-    image: redis:6-alpine
 
   zookeeper:
     image: confluentinc/cp-zookeeper:6.2.0
