@@ -21,13 +21,10 @@
 
 <script>
 import API from "@/services/API";
-import Action from "@/services/Action";
 import Vue from "vue";
-import Subscribers from "@/views/settings/Subsсribers";
 
 export default {
   name: "Settings",
-  components: {Subscribers},
   data() {
     return {
       version: null
