@@ -4,9 +4,12 @@ on:
 #   push:
 #     branches:
 #       - master
-#   pull_request:
-#     branches:
-#       - master
+   pull_request:
+     branches:
+       - master
+   merge:
+     branches:
+       - master
 
 jobs:
   front:
