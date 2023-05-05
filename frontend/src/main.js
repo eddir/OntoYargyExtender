@@ -14,6 +14,8 @@ import VueToast from 'vue-toast-notification';
 //import 'vue-toast-notification/dist/theme-default.css';
 import 'vue-toast-notification/dist/theme-sugar.css';
 
+import Pusher from 'pusher-js';
+
 
 Vue.config.performance = true
 
@@ -32,6 +34,12 @@ Vue.use(VueTimeago, {
     ru: require('date-fns/locale/ru'),
   }
 })
+
+// Enable pusher logging - don't include this in production
+Pusher.logToConsole = true;
+Vue.prototype.$pusher = new Pusher('2c3e5dc6380afaa510c6', {
+  cluster: 'us2'
+});
 
 Vue.prototype.$log = console.log.bind(console);
 

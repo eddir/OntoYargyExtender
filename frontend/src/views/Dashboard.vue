@@ -21,14 +21,19 @@ export default {
   data() {
     return {
       onto_list: [],
+      channel: null,
     }
   },
   created() {
-    // this.timer = setInterval(() => {
-      API.getFillOntologies().then(response => {
-        this.onto_list = response.data.response;
-      });
-    // }, 3000)
+    this.channel = this.$pusher.subscribe('ontologies-tasks');
+    this.channel.bind('fill-event', () => {
+      this.update();
+    });
+    this.update();
+  },
+  beforeDestroy() {
+    this.channel.unbind();
+    this.$pusher.unsubscribe('ontologies-tasks');
   },
   methods: {
     update() {

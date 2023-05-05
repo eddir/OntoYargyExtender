@@ -39,6 +39,7 @@
     "@coreui/vue-chartjs": "^1.0.6",
     "axios": "^0.21.1",
     "date-fns": "^2.22.1",
+    "pusher-js": "^8.0.2",
     "vue": "~2.6.12",
     "vue-router": "^3.5.1",
     "vue-telegram-login": "^2.1.0",
