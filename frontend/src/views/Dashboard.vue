@@ -24,11 +24,11 @@ export default {
     }
   },
   created() {
-    this.timer = setInterval(() => {
+    // this.timer = setInterval(() => {
       API.getFillOntologies().then(response => {
         this.onto_list = response.data.response;
       });
-    }, 3000)
+    // }, 3000)
   },
   methods: {
     update() {

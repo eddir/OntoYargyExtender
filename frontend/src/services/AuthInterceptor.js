@@ -10,7 +10,6 @@ axios.defaults.xsrfCookieName = "XCSRF-TOKEN";
 let tokenRefreshing = false;
 
 axios.interceptors.response.use(async response => {
-    return response;
     if (response.data.code === 0) {
         // вернуть без вмешательства
         return response;
