@@ -2,26 +2,26 @@ import Vue from 'vue'
 import regeneratorRuntime from "regenerator-runtime";
 import { shallowMount } from '@vue/test-utils'
 import CoreuiVue from '@coreui/vue'
-import Dashboard from '@/views/Dashboard'
+import Filler from '@/views/filler/Filler.vue'
 
 
 Vue.use(regeneratorRuntime)
 Vue.use(CoreuiVue)
 
-describe('Dashboard.vue', () => {
+describe('Filler.vue', () => {
   it('has a name', () => {
-    expect(Dashboard.name).toBe('Dashboard')
+    expect(Filler.name).toBe('Filler')
   })
   it('is Vue instance', () => {
-    const wrapper = shallowMount(Dashboard)
+    const wrapper = shallowMount(Filler)
     expect(wrapper.vm).toBeTruthy()
   })
   it('is Dashboard', () => {
-    const wrapper = shallowMount(Dashboard)
-    expect(wrapper.findComponent(Dashboard)).toBeTruthy()
+    const wrapper = shallowMount(Filler)
+    expect(wrapper.findComponent(Filler)).toBeTruthy()
   })
   test('renders correctly', () => {
-    const wrapper = shallowMount(Dashboard)
+    const wrapper = shallowMount(Filler)
     expect(wrapper.element).toMatchSnapshot()
   })
 })

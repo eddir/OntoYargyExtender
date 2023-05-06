@@ -2,12 +2,14 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import NewUser from "@/views/users/NewUser";
 import OntologiesPanel from "@/views/ontologies/OntologiesPanel.vue";
+import FillerArchive from "@/views/filler/FillerArchive.vue";
+import Filler from "@/views/filler/Filler.vue";
 
 // Containers
 const TheContainer = () => import('@/containers/TheContainer')
 
 // Views
-const Dashboard = () => import('@/views/Dashboard')
+const Dashboard = () => import('@/views/filler/Filler')
 
 // Views - Pages
 const Page404 = () => import('@/views/Page404')
@@ -41,14 +43,14 @@ function configRoutes() {
                     component: Dashboard
                 },
                 {
-                    path: 'dashboard',
+                    path: 'fill',
                     name: 'Заполнение',
-                    component: Dashboard
+                    component: Filler
                 },
                 {
                     path: 'ontologies',
                     name: 'Архив',
-                    component: OntologiesPanel
+                    component: FillerArchive
                 },
                 {
                     path: 'users',

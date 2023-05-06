@@ -1,8 +1,8 @@
 <template>
-  <CHeader fixed with-subheader light class="d-block d-sm-none">
+  <CHeader fixed with-subheader light class="d-block d-md-none">
     <CHeaderNav class="mr-auto overflow-auto">
       <CHeaderNavItem class="px-3">
-        <CHeaderNavLink to="/dashboard">
+        <CHeaderNavLink to="/fill">
           Заполнение
         </CHeaderNavLink>
       </CHeaderNavItem>
