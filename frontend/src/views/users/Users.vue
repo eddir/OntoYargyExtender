@@ -13,7 +13,9 @@
                 itemsPerPageSelect
                 pagination
             >
-                <CButton slot="control-remove" slot-scope="{item}" class="align-middle control-icon" color="danger" size="sm"
+                <CButton slot="control-remove" slot-scope="{item}"
+                         class="align-middle control-icon" style="margin-top: 10px"
+                         color="danger" size="sm"
                 @click="remove(item.user_id)">X</CButton>
             </CDataTable>
             <router-link to="/users/add/">
