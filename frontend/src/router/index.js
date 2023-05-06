@@ -18,7 +18,7 @@ const Login = () => import('@/views/Login')
 const Users = () => import('@/views/users/Users');
 
 // Settings
-const Settings = () => import('@/views/settings/Settings');
+const About = () => import('@/views/about/About');
 
 Vue.use(Router);
 
@@ -37,27 +37,18 @@ function configRoutes() {
             component: TheContainer,
             children: [
                 {
+                    path: '',
+                    component: Dashboard
+                },
+                {
                     path: 'dashboard',
-                    name: 'Главная',
+                    name: 'Заполнение',
                     component: Dashboard
                 },
                 {
                     path: 'ontologies',
-                    meta: {
-                        label: 'Ontologies'
-                    },
-                    component: {
-                        render(c) {
-                            return c('router-view')
-                        }
-                    },
-                    children: [
-                        {
-                            path: '',
-                            name: 'Ontologies List',
-                            component: OntologiesPanel
-                        },
-                    ]
+                    name: 'Архив',
+                    component: OntologiesPanel
                 },
                 {
                     path: 'users',
@@ -70,20 +61,20 @@ function configRoutes() {
                     children: [
                         {
                             path: '',
-                            name: "Users",
+                            name: "",
                             component: Users
                         },
                         {
                             path: 'add',
-                            name: "Add user",
+                            name: "Добавить пользователя",
                             component: NewUser
                         },
                     ]
                 },
                 {
-                    path: 'settings',
-                    name: 'Настройки',
-                    component: Settings
+                    path: 'about',
+                    name: 'О программе',
+                    component: About
                 }
             ]
         },

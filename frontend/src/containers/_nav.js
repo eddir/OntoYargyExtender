@@ -22,8 +22,8 @@ export default [
       },
       {
         _name: 'CSidebarNavItem',
-        name: 'Настройки',
-        to: '/settings/',
+        name: 'О программе',
+        to: '/about/',
         icon: 'cil-settings'
       },
     ]

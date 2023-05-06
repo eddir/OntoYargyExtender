@@ -24,7 +24,7 @@ import API from "@/services/API";
 import Vue from "vue";
 
 export default {
-  name: "Settings",
+  name: "About",
   data() {
     return {
       version: null
