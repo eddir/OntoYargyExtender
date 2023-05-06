@@ -1,8 +1,27 @@
 <template>
   <div>
     <CRow>
-      <CCol md="12">
-        <NewOntologyFill @update="update"></NewOntologyFill>
+      <CCol ref="filler" md="12">
+        <NewOntologyFill @update="start"></NewOntologyFill>
+      </CCol>
+      <CCol ref="wip" md="12" hidden>
+        <CContainer>
+          <CRow>
+            <CCol md="12">
+              <CCard>
+                <CCardHeader>
+                  Заполнение онтологий
+                </CCardHeader>
+                <CCardBody>
+                  <CSpinner
+                      color="primary"
+                      style="width:4rem;height:4rem;"
+                  />
+                </CCardBody>
+              </CCard>
+            </CCol>
+          </CRow>
+        </CContainer>
       </CCol>
     </CRow>
   </div>
@@ -16,27 +35,30 @@ export default {
   components: {NewOntologyFill},
   data() {
     return {
-      onto_list: [],
       channel: null,
     }
   },
   created() {
     this.channel = this.$pusher.subscribe('ontologies-tasks');
-    this.channel.bind('fill-event', () => {
-      this.update();
+    this.channel.bind('fill-event', data => {
+      this.finish(data['ontology_id']);
     });
-    this.update();
   },
   beforeDestroy() {
     this.channel.unbind();
     this.$pusher.unsubscribe('ontologies-tasks');
   },
   methods: {
-    update() {
-      API.getFillOntologies().then(response => {
-        this.onto_list = response.data.response;
-      });
-    }
+    start() {
+      this.$refs.filler.hidden = true;
+      this.$refs.wip.hidden = false;
+    },
+    finish(ontology_id) {
+      this.$refs.filler.hidden = false;
+      this.$refs.wip.hidden = true;
+      this.$toast.success("Онтология заполнена");
+      API.downloadFilledOntology(ontology_id)
+    },
   }
 }
 </script>

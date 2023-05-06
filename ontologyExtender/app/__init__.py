@@ -111,7 +111,10 @@ def main():
                                     cursor.execute("UPDATE panel_filledontology SET status = %s WHERE id = %s", ("done", task_id))
                                     connection.commit()
 
-                                    pusher_client.trigger('ontologies-tasks', 'fill-event', {'message': 'done'})
+                                    pusher_client.trigger('ontologies-tasks', 'fill-event', {
+                                        'message': 'done',
+                                        'ontology_id': task_id
+                                    })
 
                             except (Exception, Error) as error:
                                 print("Error while producing ontology filler task: ", error, " - in line ", sys.exc_info()[-1].tb_lineno)
