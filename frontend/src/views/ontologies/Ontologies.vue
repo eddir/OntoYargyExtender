@@ -21,7 +21,7 @@
               </template>
               <template v-slot:status="{item}">
                 <td>
-                  <CBadge :color="item.status === 'done' ? 'success' : 'warning'">
+                  <CBadge :color="item.status === 'done' ? 'success' : 'warning'" style="padding: 4px 7px">
                     {{ item.status === 'done' ? 'Успешно' : 'Ошибка' }}
                   </CBadge>
                 </td>
