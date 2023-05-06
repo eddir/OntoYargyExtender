@@ -26,6 +26,9 @@
                   </CBadge>
                 </td>
               </template>
+              <template v-slot:no-items-view>
+                <tr></tr>
+              </template>
               <CButton slot="control-download" slot-scope="{item}"
                        color="primary" size="sm" style="margin-top: 10px"
                        @click="download(item.id)" v-show="item.status === 'done'">Скачать
