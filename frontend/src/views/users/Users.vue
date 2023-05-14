@@ -13,8 +13,15 @@
                 itemsPerPageSelect
                 pagination
             >
-                <CButton slot="control-remove" slot-scope="{item}" class="align-middle control-icon" color="danger" size="sm"
-                @click="remove(item.user_id)">X</CButton>
+
+              <template v-slot:no-items-view>
+                <tr></tr>
+              </template>
+              <CButton slot="control-remove" slot-scope="{item}"
+                       class="align-middle control-icon" style="margin-top: 10px"
+                       color="danger" size="sm"
+                       @click="remove(item.user_id)">X
+              </CButton>
             </CDataTable>
             <router-link to="/users/add/">
               <CButton color="primary" size="sm">Добавить пользователя</CButton>

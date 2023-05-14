@@ -3,7 +3,7 @@
     <CRow>
       <CCol md="6">
         <CCard>
-          <CCardHeader>OntoYargyExtender</CCardHeader>
+          <CCardHeader>OntologyFiller</CCardHeader>
           <CCardBody>
             <p><b>Версия:</b> {{ version }}</p>
           </CCardBody>
@@ -24,7 +24,7 @@ import API from "@/services/API";
 import Vue from "vue";
 
 export default {
-  name: "Settings",
+  name: "About",
   data() {
     return {
       version: null

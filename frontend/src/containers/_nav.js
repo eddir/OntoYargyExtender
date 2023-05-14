@@ -4,13 +4,13 @@ export default [
     _children: [
       {
         _name: 'CSidebarNavItem',
-        name: 'Главная',
-        to: '/dashboard/',
+        name: 'Заполнение',
+        to: '/fill/',
         icon: 'cil-speedometer'
       },
       {
         _name: 'CSidebarNavItem',
-        name: 'Онтологии',
+        name: 'Архив',
         to: '/ontologies/',
         icon: 'cil-basket'
       },
@@ -22,8 +22,8 @@ export default [
       },
       {
         _name: 'CSidebarNavItem',
-        name: 'Настройки',
-        to: '/settings/',
+        name: 'О программе',
+        to: '/about/',
         icon: 'cil-settings'
       },
     ]

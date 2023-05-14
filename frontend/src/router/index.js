@@ -2,12 +2,14 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import NewUser from "@/views/users/NewUser";
 import OntologiesPanel from "@/views/ontologies/OntologiesPanel.vue";
+import FillerArchive from "@/views/filler/FillerArchive.vue";
+import Filler from "@/views/filler/Filler.vue";
 
 // Containers
 const TheContainer = () => import('@/containers/TheContainer')
 
 // Views
-const Dashboard = () => import('@/views/Dashboard')
+const Dashboard = () => import('@/views/filler/Filler')
 
 // Views - Pages
 const Page404 = () => import('@/views/Page404')
@@ -18,7 +20,7 @@ const Login = () => import('@/views/Login')
 const Users = () => import('@/views/users/Users');
 
 // Settings
-const Settings = () => import('@/views/settings/Settings');
+const About = () => import('@/views/about/About');
 
 Vue.use(Router);
 
@@ -37,27 +39,18 @@ function configRoutes() {
             component: TheContainer,
             children: [
                 {
-                    path: 'dashboard',
-                    name: 'Главная',
+                    path: '',
                     component: Dashboard
                 },
                 {
+                    path: 'fill',
+                    name: 'Заполнение',
+                    component: Filler
+                },
+                {
                     path: 'ontologies',
-                    meta: {
-                        label: 'Ontologies'
-                    },
-                    component: {
-                        render(c) {
-                            return c('router-view')
-                        }
-                    },
-                    children: [
-                        {
-                            path: '',
-                            name: 'Ontologies List',
-                            component: OntologiesPanel
-                        },
-                    ]
+                    name: 'Архив',
+                    component: FillerArchive
                 },
                 {
                     path: 'users',
@@ -70,20 +63,20 @@ function configRoutes() {
                     children: [
                         {
                             path: '',
-                            name: "Users",
+                            name: "",
                             component: Users
                         },
                         {
                             path: 'add',
-                            name: "Add user",
+                            name: "Добавить пользователя",
                             component: NewUser
                         },
                     ]
                 },
                 {
-                    path: 'settings',
-                    name: 'Настройки',
-                    component: Settings
+                    path: 'about',
+                    name: 'О программе',
+                    component: About
                 }
             ]
         },

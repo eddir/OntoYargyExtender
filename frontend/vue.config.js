@@ -13,6 +13,7 @@ module.exports = {
   ],
   devServer: {
     disableHostCheck: true,
+    host: 'localhost',
     port: 443,
     https: true,
     proxy: {
