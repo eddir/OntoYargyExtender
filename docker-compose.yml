@@ -20,9 +20,9 @@ services:
     environment:
       PGADMIN_DEFAULT_EMAIL: "ea@rostkov.me"
       PGADMIN_DEFAULT_PASSWORD: "oepass"
-#    volumes:
-#     - ./docker/pgdmin/servers.json:/pgadmin4/servers.json # preconfigured servers/connections
-#     - ./docker/pgdmin/pgpass:/pgpass # passwords for the connections in this file
+    #    volumes:
+    #     - ./docker/pgdmin/servers.json:/pgadmin4/servers.json # preconfigured servers/connections
+    #     - ./docker/pgdmin/pgpass:/pgpass # passwords for the connections in this file
     ports:
       - "8008:80"
     networks:
@@ -53,6 +53,11 @@ services:
       SECRET_KEY: ${SECRET_KEY}
       KAFKA_HOST: kafka:29092
       KAFKA_TOPIC: "fill_ontology"
+      AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
+      AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
+      AWS_STORAGE_BUCKET_NAME: ${AWS_STORAGE_BUCKET_NAME}
+      AWS_S3_REGION_NAME: ${AWS_S3_REGION_NAME}
+      AWS_S3_ENDPOINT_URL: ${AWS_S3_ENDPOINT_URL}
     command: >
       sh -c "pipenv run python manage.py makemigrations && 
       pipenv run python manage.py migrate && 
@@ -140,6 +145,11 @@ services:
       - PUSHER_APP_KEY=${PUSHER_APP_KEY}
       - PUSHER_APP_SECRET=${PUSHER_APP_SECRET}
       - PUSHER_CLUSTER=${PUSHER_CLUSTER}
+      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
+      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
+      - AWS_STORAGE_BUCKET_NAME=${AWS_STORAGE_BUCKET_NAME}
+      - AWS_S3_REGION_NAME=${AWS_S3_REGION_NAME}
+      - AWS_S3_ENDPOINT_URL=${AWS_S3_ENDPOINT_URL}
     restart: "always"
     depends_on:
       - zookeeper

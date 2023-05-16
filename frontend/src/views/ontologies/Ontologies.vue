@@ -12,7 +12,8 @@
                 head-color="light"
                 :itemsPerPageSelect="{label: 'Элементов на странице', values: [5, 10, 20, 50]}"
                 pagination
-                :sorterValue="{ column: 'id', asc: false }"
+                sorter
+                :sorterValue="{ column: 'created_at', asc: false }"
             >
               <template v-slot:created_at="{item}">
                 <td>

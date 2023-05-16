@@ -1,11 +1,14 @@
 import os
 from json import dumps
+from django.utils import timezone
 
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 from django.utils.decorators import method_decorator
 from rest_framework.views import APIView
 from django_celery_results.models import TaskResult
+
+from kafka import KafkaProducer
 
 from panel.models import Ontology, FilledOntology
 from panel.utils import api_response
@@ -71,14 +74,17 @@ class OntologyFillView(APIView):
         """ retrieve owl and facts files from request, save them in the database and run the fill task in kafka """
         owl = request.FILES['owl']
         text = request.FILES['text']
+
         # save owl and facts files in the database
         ontology = FilledOntology()
         ontology.name = owl.name
-        ontology.owl = owl.read().decode('utf-8')
-        ontology.text = text.read().decode('utf-8')
+
+        # save with time prefix
+        prefix = timezone.now().strftime("%Y%m%d-%H%M%S") + "_"
+        ontology.owl.save(prefix + owl.name, owl)
+        ontology.text.save(prefix + text.name, text)
         ontology.save()
 
-        from kafka import KafkaProducer
         print("sending to kafka")
         producer = KafkaProducer(
             bootstrap_servers=os.environ.get('KAFKA_HOST'),
@@ -98,8 +104,10 @@ class OntologyFillDownloadView(APIView):
     @method_decorator(login_required)
     @staticmethod
     def get(request, pl):
+        # assume that the file is already filled and upload to s3
         content = FilledOntology.objects.get(pk=pl)
         filename = ".".join(content.name.split(".")[:-1]) + "_filled.owl"
-        response = HttpResponse(content.result, content_type='text/plain')
+        raw_data = content.result.read()
+        response = HttpResponse(raw_data, content_type='text/plain')
         response['Content-Disposition'] = 'attachment; filename={0}'.format(filename)
         return response

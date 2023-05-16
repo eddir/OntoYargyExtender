@@ -15,6 +15,11 @@ class EnvironmentVariables(str, Enum):
     PUSHER_APP_KEY = 'PUSHER_APP_KEY'
     PUSHER_APP_SECRET = 'PUSHER_APP_SECRET'
     PUSHER_CLUSTER = 'PUSHER_CLUSTER'
+    AWS_ACCESS_KEY_ID = 'AWS_ACCESS_KEY_ID'
+    AWS_SECRET_ACCESS_KEY = 'AWS_SECRET_ACCESS_KEY'
+    AWS_STORAGE_BUCKET_NAME = 'AWS_STORAGE_BUCKET_NAME'
+    AWS_REGION_NAME = 'AWS_S3_REGION_NAME'
+    AWS_S3_ENDPOINT_URL = 'AWS_S3_ENDPOINT_URL'
 
     def get_env(self, variable=None):
         return os.environ.get(self, variable)
