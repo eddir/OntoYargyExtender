@@ -10,7 +10,7 @@
                 :items="onto_list"
                 :fields="tableFields"
                 head-color="light"
-                itemsPerPageSelect
+                :itemsPerPageSelect="{label: 'Элементов на странице', values: [5, 10, 20, 50]}"
                 pagination
                 :sorterValue="{ column: 'id', asc: false }"
             >
