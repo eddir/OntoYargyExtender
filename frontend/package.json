@@ -1,10 +1,10 @@
 {
-  "name": "@ilsnk/hostpanel-frontend",
+  "name": "@eddir/OntologyFiller-frontend",
   "version": "3.1.4",
-  "description": "Интерфейс панели управления игровыми серверами",
+  "description": "Интерфейс веб-сервиса наполнения онтологий",
   "author": {
     "name": "Eduard Rostkov",
-    "url": "http://rostkov.me",
+    "url": "https://rostkov.me",
     "github": "https://github.com/eddir"
   },
   "contributors": [
@@ -15,10 +15,10 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git@github.com:ilsnk/hostpanel-frontend.git"
+    "url": "git@github.com:eddir/OntologyFiller.git"
   },
-  "homepage": "http://hp.linksss.ru",
-  "copyright": "Copyright 2021 creativeLabs Łukasz Holeczek",
+  "homepage": "https://ontology.rostkov.me",
+  "copyright": "Copyright 2023 Eduard Rostkov",
   "license": "MIT",
   "scripts": {
     "serve": "vue-cli-service serve",

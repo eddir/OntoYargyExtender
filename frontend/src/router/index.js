@@ -1,7 +1,6 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import NewUser from "@/views/users/NewUser";
-import OntologiesPanel from "@/views/ontologies/OntologiesPanel.vue";
 import FillerArchive from "@/views/filler/FillerArchive.vue";
 import Filler from "@/views/filler/Filler.vue";
 
@@ -44,7 +43,7 @@ function configRoutes() {
                 },
                 {
                     path: 'fill',
-                    name: 'Заполнение',
+                    name: 'Наполнение',
                     component: Filler
                 },
                 {
