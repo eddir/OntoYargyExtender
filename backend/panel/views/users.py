@@ -29,7 +29,7 @@ class UsersView(APIView):
 
 
 class UserCreateView(CreateAPIView):
-    queryset = User.objects.all()
+    queryset = get_user_model().objects.all()
     serializer_class = UserSerializer
 
     def post(self, request, *args, **kwargs):
@@ -38,7 +38,7 @@ class UserCreateView(CreateAPIView):
 
 
 class UserRemoveView(DestroyAPIView):
-    queryset = User.objects.all()
+    queryset = get_user_model().objects.all()
     serializer_class = UserSerializer
 
     def delete(self, request, *args, **kwargs):

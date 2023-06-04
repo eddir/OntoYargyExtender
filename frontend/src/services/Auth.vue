@@ -20,5 +20,16 @@ export default {
       console.log(err);
     })
   },
+  credentialsLogout() {
+    axios.post(`${API.SERVER_URL}auth/credentials/logout/`).then(resp => {
+      if (resp.data.code === 0) {
+        Vue.$toast.success("Выход выполнен!");
+      } else {
+        Vue.$toast.error("Не удалось выйти");
+      }
+    }).catch(err => {
+      console.log(err);
+    })
+  },
 }
 </script>

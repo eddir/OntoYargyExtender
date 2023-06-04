@@ -5,7 +5,7 @@ services:
     restart: always
     image: postgres:11
     volumes:
-      - pgdata_zilions:/var/lib/postgresql/data/
+      - pgdata_ontologyfiller:/var/lib/postgresql/data/
     environment:
       POSTGRES_DB: oe
       POSTGRES_USER: oe
@@ -60,6 +60,8 @@ services:
       AWS_S3_ENDPOINT_URL: ${AWS_S3_ENDPOINT_URL}
     command: >
       sh -c "pipenv run python manage.py makemigrations && 
+      pipenv run python manage.py migrate auth && 
+      pipenv run python manage.py migrate authentication && 
       pipenv run python manage.py migrate && 
       pipenv run python manage.py shell -c \"from django.contrib.auth.models import User; User.objects.filter(username='admin').exists() or User.objects.create_superuser('admin', 'ea@rostkov.me', 'admin')\" &&
       pipenv run python manage.py collectstatic --noinput && 
@@ -159,7 +161,7 @@ services:
       - default
 
 volumes:
-  pgdata_zilions: { }
+  pgdata_ontologyfiller: { }
 
 networks:
   default:

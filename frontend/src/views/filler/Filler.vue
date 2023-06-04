@@ -39,7 +39,7 @@ export default {
     finish(ontology_id) {
       this.$refs.filler.hidden = false;
       this.$refs.wip.hide();
-      this.$toast.success("Онтология заполнена");
+      this.$toast.success("Онтология наполнена");
       API.downloadFilledOntology(ontology_id)
     },
   }

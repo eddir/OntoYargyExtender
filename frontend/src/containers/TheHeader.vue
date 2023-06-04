@@ -1,24 +1,9 @@
 <template>
   <CHeader fixed with-subheader light class="d-block d-md-none">
     <CHeaderNav class="mr-auto overflow-auto">
-      <CHeaderNavItem class="px-3">
-        <CHeaderNavLink to="/fill">
-          Заполнение
-        </CHeaderNavLink>
-      </CHeaderNavItem>
-      <CHeaderNavItem class="px-3">
-        <CHeaderNavLink to="/ontologies">
-          Архив
-        </CHeaderNavLink>
-      </CHeaderNavItem>
-      <CHeaderNavItem class="px-3">
-        <CHeaderNavLink to="/users">
-          Пользователи
-        </CHeaderNavLink>
-      </CHeaderNavItem>
-      <CHeaderNavItem class="px-3">
-        <CHeaderNavLink to="/about">
-          О программе
+      <CHeaderNavItem v-for="item in items" :key="item._name" class="px-3">
+        <CHeaderNavLink :to="item.to">
+          {{ item.name }}
         </CHeaderNavLink>
       </CHeaderNavItem>
     </CHeaderNav>
@@ -29,7 +14,13 @@
 </template>
 
 <script>
+import nav from './_nav'
 export default {
   name: 'TheHeader',
+  data () {
+    return {
+      items: nav[0]._children
+    }
+  }
 }
 </script>

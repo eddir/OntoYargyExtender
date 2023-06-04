@@ -106,7 +106,7 @@ def main():
                                     })
                             except Exception as e:
                                 exc_type, exc_obj, exc_tb = sys.exc_info()
-                                print("parsing suka error at line ({0}): {1} ".format(exc_tb.tb_lineno, e))
+                                print("parsing error at line ({0}): {1} ".format(exc_tb.tb_lineno, e))
                                 producer.send(kafka_topic, {
                                     "id": message.value['id'],
                                     "action": "error",

@@ -10,6 +10,10 @@
               <CInput :value.sync="login" label="Логин"/>
               <CInput :value.sync="password" label="Пароль" type="password"/>
               <CButton color="success" class="m-2" @click="auth">Войти</CButton>
+              <span class="float-right">
+                  Нет аккаунта?
+                  <CButton class="m-2 btn-link" to="/register">Зарегистрируйтесь</CButton>
+                </span>
             </CCardBody>
           </CCard>
         </CCol>

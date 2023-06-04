@@ -4,7 +4,7 @@ export default [
     _children: [
       {
         _name: 'CSidebarNavItem',
-        name: 'Заполнение',
+        name: 'Наполнение',
         to: '/fill/',
         icon: 'cil-speedometer'
       },
@@ -26,6 +26,12 @@ export default [
         to: '/about/',
         icon: 'cil-settings'
       },
+      {
+        _name: 'CSidebarNavItem',
+        name: 'Выход',
+        to: '/logout/',
+        icon: 'cil-account-logout'
+      }
     ]
   }
 ]

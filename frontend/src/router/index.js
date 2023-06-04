@@ -3,6 +3,8 @@ import Router from 'vue-router'
 import NewUser from "@/views/users/NewUser";
 import FillerArchive from "@/views/filler/FillerArchive.vue";
 import Filler from "@/views/filler/Filler.vue";
+import Register from "@/views/Register.vue";
+import Auth from "@/services/Auth.vue";
 
 // Containers
 const TheContainer = () => import('@/containers/TheContainer')
@@ -94,6 +96,20 @@ function configRoutes() {
             name: 'Login',
             component: Login
         },
+        {
+            path: '/register',
+            name: 'Register',
+            component: Register
+        },
+        {
+            path: '/logout',
+            name: 'Logout',
+            beforeEnter: (to, from, next) => {
+                console.log('logout');
+                Auth.credentialsLogout();
+                next('/login');
+            }
+        }
     ]
 }
 

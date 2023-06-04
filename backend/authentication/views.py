@@ -1,5 +1,4 @@
-from django.contrib.auth import authenticate
-from django.contrib.auth.models import User
+from django.contrib.auth import authenticate, get_user_model
 from django.template.context_processors import csrf
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.decorators import api_view, authentication_classes, permission_classes
@@ -9,6 +8,8 @@ from rest_framework_simplejwt.tokens import RefreshToken
 
 from panel.exceptions import AUTH_FAILED, APIError, RESPONSE_OK, AUTH_WRONG_REFRESH_TOKEN, UNEXPECTED_ERROR, \
     AUTH_WRONG_CREDENTIALS
+
+from authentication.models import Request
 
 
 @csrf_exempt
@@ -34,6 +35,57 @@ def auth(request):
         return login(request)
     else:
         raise APIError(AUTH_WRONG_CREDENTIALS)
+
+
+@api_view(('POST',))
+@authentication_classes([])
+@permission_classes([])
+def register(request):
+    if get_user_model().objects.filter(username=request.data['username']).exists():
+        raise APIError(message="Пользователь с таким логином уже существует.")
+
+    user = get_user_model().objects.create_user(
+        username=request.data['username'],
+        password=request.data['password'],
+        first_name=request.data['first_name'],
+        last_name=request.data['last_name'],
+        email=request.data['email'],
+        is_active=False
+    )
+    user.save()
+
+    registration_request = Request()
+    registration_request.user = user
+    registration_request.organization = request.data['organization']
+    registration_request.position = request.data['position']
+    registration_request.goal = request.data['goal']
+    registration_request.save()
+
+    return Response(
+        {
+            "code": RESPONSE_OK,
+            "response": {
+                "message": "Регистрация прошла успешно."
+            }
+        }
+    )
+
+
+@api_view(('POST',))
+@authentication_classes([])
+@permission_classes([])
+def logout(request):
+    response = Response(
+        {
+            "code": RESPONSE_OK,
+            "response": {
+                "message": "Выход выполнен."
+            }
+        }
+    )
+    response.set_cookie("JWT", "", max_age=0, httponly=True, samesite="None", secure=True)
+    response.set_cookie("JWT-REFRESH", "", max_age=0, httponly=True, samesite="None", secure=True, path="/auth")
+    return response
 
 
 def login(request):

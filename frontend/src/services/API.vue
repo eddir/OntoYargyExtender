@@ -66,6 +66,9 @@ export default {
       Vue.$toast.error(err.response);
     })
   },
+  register(user) {
+    return axios.post(`${SERVER_URL}auth/credentials/register/`, user);
+  },
   ping() {
     return axios.get(`${REST_URL}ping/`);
   },
