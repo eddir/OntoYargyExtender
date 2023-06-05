@@ -26,6 +26,15 @@ export default {
   removeUser(user_id) {
     return axios.delete(`${REST_URL}users/${user_id}/remove/`);
   },
+  getRequests() {
+    return axios.get(`${REST_URL}requests/`);
+  },
+  acceptRequest(request_id) {
+    return axios.post(`${REST_URL}request/${request_id}/`);
+  },
+  rejectRequest(request_id) {
+    return axios.delete(`${REST_URL}request/${request_id}/`);
+  },
   importOntology(formData) {
     return axios.post(`${REST_URL}ontologies/import/`, formData);
   },

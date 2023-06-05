@@ -5,6 +5,7 @@ import FillerArchive from "@/views/filler/FillerArchive.vue";
 import Filler from "@/views/filler/Filler.vue";
 import Register from "@/views/Register.vue";
 import Auth from "@/services/Auth.vue";
+import UsersDashboard from "@/views/users/UsersDashboard.vue";
 
 // Containers
 const TheContainer = () => import('@/containers/TheContainer')
@@ -65,7 +66,7 @@ function configRoutes() {
                         {
                             path: '',
                             name: "",
-                            component: Users
+                            component: UsersDashboard
                         },
                         {
                             path: 'add',

@@ -55,6 +55,12 @@ export default {
         case "remove_user":
           this.action(API.removeUser(unit_id), callback);
           break;
+        case "accept_request":
+          this.action(API.acceptRequest(unit_id), callback);
+          break;
+        case "reject_request":
+          this.action(API.rejectRequest(unit_id), callback);
+          break;
         default:
           console.error("Given action '" + action + "' is not defined in quickAction.");
       }
