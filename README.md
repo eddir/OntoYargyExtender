@@ -93,6 +93,15 @@ The application can be configured by editing the `.env` file. The following opti
 - [PostgreSQL](https://www.postgresql.org/) - Database for storing user data
 - [Pusher](https://pusher.com/) - Service for sending notifications to the web interface
 
+## Citing
+
+```
+Ростков, Э. А. О преимуществах использования Yargy-парсера при наполнении онтологий 
+/ Э. А. Ростков, Т. Э. Шульга 
+// Проблемы управления в социально-экономических и технических системах: Сборник научных статей Материалы XIX Международной научно-практической конференции, 
+Саратов, 13–14 апреля 2023 года. – Саратов (в печати). 
+```
+
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
