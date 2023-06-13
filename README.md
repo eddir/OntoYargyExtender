@@ -99,4 +99,5 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## Acknowledgments
 
-This project was developed as part of my bachelor's thesis.
+This project was developed as part of my bachelor's thesis. Special thanks to my supervisor, Dr. Tatiana Shulga for her
+guidance and support.
